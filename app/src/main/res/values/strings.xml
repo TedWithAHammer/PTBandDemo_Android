@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">BluetoothCommunication</string>
+    <string name="command">输入指令</string>
+    <string name="send_command">发送指令</string>
+    <string name="lost_package_num">丢包个数</string>
+    <string name="command_tip">请输入16进制数</string>
+</resources>

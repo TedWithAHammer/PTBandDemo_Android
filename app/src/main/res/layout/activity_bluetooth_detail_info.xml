@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.bluetooth.leo.bluetoothcommunication.BluetoothDetailInfoActivity">
+
+    <RelativeLayout
+        android:id="@+id/layoutControl"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+        <TextView
+            android:id="@+id/tvTip"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:gravity="center_vertical"
+            android:text="@string/command" />
+
+        <Button
+            android:id="@+id/btnSendCommand"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:text="@string/send_command" />
+
+        <EditText
+            android:id="@+id/etCommand"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/command_tip"
+            android:gravity="center_vertical"
+            android:layout_toStartOf="@+id/btnSendCommand"
+            android:layout_toEndOf="@+id/tvTip" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layoutControl">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/lostPackageNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:text="@string/lost_package_num"
+        android:textSize="18sp" />
+</RelativeLayout>

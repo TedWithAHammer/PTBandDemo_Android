@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvDes"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_alignParentStart="true"
+        android:gravity="center_vertical"
+        android:text="蓝牙名称"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tvDis"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_alignParentEnd="true"
+        android:gravity="center_vertical"
+        android:text="距离" />
+
+    <TextView
+        android:id="@+id/tvMacAddress"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/tvDes"
+        android:gravity="center_vertical"
+        android:textSize="16sp" />
+
+</RelativeLayout>
