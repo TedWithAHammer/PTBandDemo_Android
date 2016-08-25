@@ -25,15 +25,17 @@ public class TransferUtil {
      * @return
      */
     public static String byte2SpecificFormatHexStr(byte[] origin) {
-        StringBuffer sb = new StringBuffer(origin.length + origin.length/2);
+        StringBuffer sb = new StringBuffer();
         String sTemp;
         for (int i = 0; i < origin.length; i++) {
             sTemp = Integer.toHexString(0xFF & origin[i]);
             if (sTemp.length() < 2)
                 sb.append(0);
             sb.append(sTemp.toUpperCase());
-            if (i % 2 == 1 ) {
+            if (i % 2 == 1 && i != origin.length - 1) {
                 sb.append("-");
+            } else if (i == origin.length - 1) {
+                sb.append("^e");
             }
         }
         return sb.toString();

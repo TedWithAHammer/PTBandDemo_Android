@@ -40,7 +40,7 @@ import static android.R.id.list;
 
 
 public class BluetoothDetailInfoActivity extends AppCompatActivity {
-    private static final String Tag = "log_info";
+    private static final String Tag = "com.leo.wang";
     @PotatoInjection(id = R.id.btnSendCommand, click = "sendCommand")
     Button btnSendCommand;
     @PotatoInjection(id = R.id.lostPackageNum)
@@ -60,6 +60,8 @@ public class BluetoothDetailInfoActivity extends AppCompatActivity {
 
     List<Pair<String, String>> pairList = new ArrayList<>();
     private BluetoothDataAdapter adapter;
+
+    boolean isConnected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,18 +85,33 @@ public class BluetoothDetailInfoActivity extends AppCompatActivity {
 
     private void addTextWatcher() {
         etCommand.addTextChangedListener(new TextWatcher() {
+            boolean isAuto = false;
+            int i = 0;
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+//                if (isAuto) {
+//                    etCommand.setSelection(s.length());
+//                    isAuto = false;
+//                    return;
+//                }
+//                i += count-before;
+//                if (i == 4) {
+//                    i = 0;
+//                    isAuto = true;
+//                    etCommand.setText(s.toString() + " ");
+//                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+
+
+//                if (s.length() % 4)
 //                int length = s.length();
 //                if (length <= 0)
 //                    return;
@@ -121,8 +138,12 @@ public class BluetoothDetailInfoActivity extends AppCompatActivity {
     }
 
     void sendCommand(View v) {
+        if (!isConnected) {
+            Toast.makeText(this, "还未连接上", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (!TextUtils.isEmpty(etCommand.getText().toString())) {
-            String hexString = etCommand.getText().toString().toUpperCase();
+            String hexString = etCommand.getText().toString().replace(" ", "").toUpperCase();
             byte[] data = TransferUtil.hex2Byte(hexString);
             if (writeCharacteristic != null) {
                 writeCharacteristic.setValue(data);
@@ -155,16 +176,26 @@ public class BluetoothDetailInfoActivity extends AppCompatActivity {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             super.onConnectionStateChange(gatt, status, newState);
-            Log.i(Tag, "onConnectionStateChange");
             if (newState == BluetoothProfile.STATE_CONNECTED) {
+                Log.i(Tag, "onConnectionStateChange:STATE_CONNECTED");
+                isConnected = true;
                 mGatt.discoverServices();
+            } else if (newState == BluetoothProfile.STATE_DISCONNECTING) {
+                Log.i(Tag, "onConnectionStateChange:STATE_DISCONNECTING");
+                isConnected = false;
             }
         }
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             super.onServicesDiscovered(gatt, status);
-            Log.i(Tag, "onConnectionStateChange");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(BluetoothDetailInfoActivity.this, "服务已打开，可发送数据", Toast.LENGTH_SHORT).show();
+                }
+            });
+            Log.i(Tag, "onServicesDiscovered");
             filterTheData(gatt);
         }
 
@@ -187,7 +218,7 @@ public class BluetoothDetailInfoActivity extends AppCompatActivity {
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicRead(gatt, characteristic, status);
-            Log.i(Tag, "onConnectionStateChange");
+            Log.i(Tag, "onCharacteristicRead");
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -197,6 +228,7 @@ public class BluetoothDetailInfoActivity extends AppCompatActivity {
                     if (!TextUtils.isEmpty(hexString)) {
                         pairList.add(new Pair<String, String>(hexString, time));
                     }
+                    Log.i(Tag, "onCharacteristicRead data:" + hexString);
                     adapter.notifyDataSetChanged();
 //                    int lastNum = data[data.length - 1];
 //                    lastNum = lastNum & 0xff;
@@ -208,13 +240,15 @@ public class BluetoothDetailInfoActivity extends AppCompatActivity {
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicWrite(gatt, characteristic, status);
-            Log.i(Tag, "onCharacteristicWrite");
+            String writeCommand = TransferUtil.byte2HexStr(characteristic.getValue());
+            Log.i(Tag, "onCharacteristicWrite characteristic:" + writeCommand);
+
         }
 
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
-            Log.i(Tag, "onCharacteristicChanged");
+//            Log.i(Tag, "onCharacteristicChanged");
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -226,6 +260,7 @@ public class BluetoothDetailInfoActivity extends AppCompatActivity {
                     if (!TextUtils.isEmpty(hexString)) {
                         pairList.add(new Pair<String, String>(hexString, time));
                     }
+                    Log.i(Tag, "onCharacteristicChanged data:" + hexString);
                     adapter.notifyDataSetChanged();
 //                    int lastNum = data[data.length - 1];
 //                    lastNum = lastNum & 0xff;
