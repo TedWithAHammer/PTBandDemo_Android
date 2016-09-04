@@ -18,21 +18,29 @@
             android:gravity="center_vertical"
             android:text="@string/command" />
 
+
+        <EditText
+            android:id="@+id/etCommand"
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@+id/tvTip"
+            android:gravity="center_vertical"
+            android:hint="@string/command_tip" />
+
         <Button
             android:id="@+id/btnSendCommand"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
+            android:layout_toRightOf="@+id/etCommand"
             android:text="@string/send_command" />
 
-        <EditText
-            android:id="@+id/etCommand"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvCommandInstruction"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:hint="@string/command_tip"
-            android:gravity="center_vertical"
-            android:layout_toStartOf="@+id/btnSendCommand"
-            android:layout_toEndOf="@+id/tvTip" />
+            android:layout_alignParentEnd="true"
+            android:gravity="center"
+            android:text="@string/command_instruction" />
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
@@ -43,6 +51,12 @@
 
     </android.support.v7.widget.RecyclerView>
 
+    <ProgressBar
+        android:id="@+id/pbConnecting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+
     <TextView
         android:id="@+id/lostPackageNum"
         android:layout_width="wrap_content"
@@ -50,5 +64,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:text="@string/lost_package_num"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:visibility="gone" />
 </RelativeLayout>

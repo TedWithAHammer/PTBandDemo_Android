@@ -4,4 +4,10 @@
     <string name="send_command">发送指令</string>
     <string name="lost_package_num">丢包个数</string>
     <string name="command_tip">请输入16进制数</string>
+    <string name="command_instruction">命令说明</string>
+    <string name="command_detail">运动数据命令:0201
+       \n睡眠数据:0301
+        \n运动心率:0401
+        \n单次心率:0501
+        \n实时心率:F501</string>
 </resources>

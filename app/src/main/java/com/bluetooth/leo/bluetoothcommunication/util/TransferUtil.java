@@ -34,22 +34,49 @@ public class TransferUtil {
             sb.append(sTemp.toUpperCase());
             if (i % 2 == 1 && i != origin.length - 1) {
                 sb.append("-");
-            } else if (i == origin.length - 1) {
-                sb.append("^e");
             }
         }
         return sb.toString();
     }
+//
+//    public static byte[] hex2Byte(String hexStr) {
+//        int len = (hexStr.length() / 2);
+//        byte[] result = new byte[len];
+//        char[] achar = hexStr.toCharArray();
+//        for (int i = 0; i < len; i++) {
+//            int pos = i * 2;
+//            result[i] = (byte) (toByte(achar[pos]) << 4 | toByte(achar[pos + 1]));
+//        }
+//        return result;
+//    }
+    /**
+     * hex字符串转byte数组<br/>
+     * 2个hex转为一个byte
+     * @param src
+     * @return
+     */
+    public static byte[] hex2Bytes1(String src){
+        byte[] res = new byte[src.length()/2];
+        char[] chs = src.toCharArray();
+        int[] b = new int[2];
 
-    public static byte[] hex2Byte(String hexStr) {
-        int len = (hexStr.length() / 2);
-        byte[] result = new byte[len];
-        char[] achar = hexStr.toCharArray();
-        for (int i = 0; i < len; i++) {
-            int pos = i * 2;
-            result[i] = (byte) (toByte(achar[pos]) << 4 | toByte(achar[pos + 1]));
+        for(int i=0,c=0; i<chs.length; i+=2,c++){
+            for(int j=0; j<2; j++){
+                if(chs[i+j]>='0' && chs[i+j]<='9'){
+                    b[j] = (chs[i+j]-'0');
+                }else if(chs[i+j]>='A' && chs[i+j]<='F'){
+                    b[j] = (chs[i+j]-'A'+10);
+                }else if(chs[i+j]>='a' && chs[i+j]<='f'){
+                    b[j] = (chs[i+j]-'a'+10);
+                }
+            }
+
+            b[0] = (b[0]&0x0f)<<4;
+            b[1] = (b[1]&0x0f);
+            res[c] = (byte) (b[0] | b[1]);
         }
-        return result;
+
+        return res;
     }
 
     private static int toByte(char c) {

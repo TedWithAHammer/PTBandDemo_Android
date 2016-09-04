@@ -1,5 +1,6 @@
 package com.bluetooth.leo.bluetoothcommunication;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
@@ -10,8 +11,8 @@ import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.os.Handler;
 import android.support.v4.util.Pair;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -21,9 +22,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bluetooth.leo.bluetoothcommunication.util.CommandUtil;
+import com.bluetooth.leo.bluetoothcommunication.util.DataDeSerializationUtil;
 import com.bluetooth.leo.bluetoothcommunication.util.TransferUtil;
 import com.leo.baseadapter.BaseViewHolder;
 import com.leo.baseadapter.RecyclerAdapter;
@@ -36,10 +40,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static android.R.id.list;
 
-
-public class BluetoothDetailInfoActivity extends AppCompatActivity {
+public class BluetoothDetailInfoActivity extends Activity {
     private static final String Tag = "com.leo.wang";
     @PotatoInjection(id = R.id.btnSendCommand, click = "sendCommand")
     Button btnSendCommand;
@@ -49,14 +51,20 @@ public class BluetoothDetailInfoActivity extends AppCompatActivity {
     EditText etCommand;
     @PotatoInjection(id = R.id.rvData)
     RecyclerView rvData;
+    @PotatoInjection(id = R.id.pbConnecting)
+    ProgressBar pbConnecting;
+    @PotatoInjection(id = R.id.tvCommandInstruction, click = "showCommandTip")
+    TextView tvCommandInstruction;
 
 
     private BluetoothDevice device;
     private BluetoothGatt mGatt;
 
-    protected static String uuidQppService = "0000fee9-0000-1000-8000-00805f9b34fb";
-    protected static String uuidQppCharWrite = "d44bc439-abfd-45a2-b575-925416129600";
+    protected static String uuidQppService = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
+    protected static String uuidQppCharWrite = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
     private static final String UUIDDes = "00002902-0000-1000-8000-00805f9b34fb";
+    protected static String uuidQppCharNotify = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
+
 
     List<Pair<String, String>> pairList = new ArrayList<>();
     private BluetoothDataAdapter adapter;
@@ -72,15 +80,34 @@ public class BluetoothDetailInfoActivity extends AppCompatActivity {
             Bundle bundle = getIntent().getBundleExtra(FindDeviceActivity.BUNDLE_INFO);
             device = bundle.getParcelable(FindDeviceActivity.DEVICE_INFO);
         }
+//        deserialize();
         addTextWatcher();
         startConnect();
         initRecyclerView();
+    }
+
+    void showCommandTip(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.command_instruction));
+        builder.setMessage(R.string.command_detail);
+        builder.show();
+    }
+
+    private void deserialize() {
+        String hexString = "020EB10102961197578c190000010362";
+        byte[] orgin = TransferUtil.hex2Bytes1(hexString);
+        DataDeSerializationUtil.deSerializationMoveData(orgin);
     }
 
     private void initRecyclerView() {
         rvData.setLayoutManager(new LinearLayoutManager(this));
         adapter = new BluetoothDataAdapter(this, pairList, R.layout.item_bluetooth_data_recyclerview);
         rvData.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     private void addTextWatcher() {
@@ -109,8 +136,6 @@ public class BluetoothDetailInfoActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-
-
 //                if (s.length() % 4)
 //                int length = s.length();
 //                if (length <= 0)
@@ -137,20 +162,23 @@ public class BluetoothDetailInfoActivity extends AppCompatActivity {
         mGatt = device.connectGatt(BluetoothDetailInfoActivity.this, true, new ChessBluetoothGatt());
     }
 
+
     void sendCommand(View v) {
         if (!isConnected) {
             Toast.makeText(this, "还未连接上", Toast.LENGTH_SHORT).show();
             return;
         }
         if (!TextUtils.isEmpty(etCommand.getText().toString())) {
-            String hexString = etCommand.getText().toString().replace(" ", "").toUpperCase();
-            byte[] data = TransferUtil.hex2Byte(hexString);
+
+            String hexString = CommandUtil.generateCommand(etCommand.getText().toString().replace(" ", "").toUpperCase());
+            byte[] data = TransferUtil.hex2Bytes1(hexString);
             if (writeCharacteristic != null) {
                 writeCharacteristic.setValue(data);
                 boolean isSucces = mGatt.writeCharacteristic(writeCharacteristic);
             }
         }
     }
+
 
     BluetoothGattCharacteristic writeCharacteristic;
 
@@ -178,8 +206,14 @@ public class BluetoothDetailInfoActivity extends AppCompatActivity {
             super.onConnectionStateChange(gatt, status, newState);
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 Log.i(Tag, "onConnectionStateChange:STATE_CONNECTED");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        pbConnecting.setVisibility(View.GONE);
+                    }
+                });
                 isConnected = true;
-                mGatt.discoverServices();
+                gatt.discoverServices();
             } else if (newState == BluetoothProfile.STATE_DISCONNECTING) {
                 Log.i(Tag, "onConnectionStateChange:STATE_DISCONNECTING");
                 isConnected = false;
@@ -189,28 +223,29 @@ public class BluetoothDetailInfoActivity extends AppCompatActivity {
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             super.onServicesDiscovered(gatt, status);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(BluetoothDetailInfoActivity.this, "服务已打开，可发送数据", Toast.LENGTH_SHORT).show();
-                }
-            });
             Log.i(Tag, "onServicesDiscovered");
             filterTheData(gatt);
         }
 
 
         private void filterTheData(BluetoothGatt gatt) {
-            BluetoothGattService server = mGatt.getService(UUID.fromString(uuidQppService));
-            List<BluetoothGattCharacteristic> datas = server.getCharacteristics();
-            for (BluetoothGattCharacteristic data : datas) {
-                if (data.getUuid().toString().equals(uuidQppCharWrite)) {
-                    writeCharacteristic = data;
-                } else if (data.getProperties() == BluetoothGattCharacteristic.PROPERTY_NOTIFY) {
-                    gatt.setCharacteristicNotification(data, true);
-                    BluetoothGattDescriptor descriptor = data.getDescriptor(UUID.fromString(UUIDDes));
-                    descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                    gatt.writeDescriptor(descriptor);
+            List<BluetoothGattService> services = gatt.getServices();
+            if (services.size() == 0)
+                return;
+            for (BluetoothGattService server : services) {
+                if (server.getUuid().toString().equals(uuidQppService)) {
+//                BluetoothGattService server = gatt.getService(UUID.fromString(uuidQppService));
+                    List<BluetoothGattCharacteristic> datas = server.getCharacteristics();
+                    for (BluetoothGattCharacteristic data : datas) {
+                        if (data.getUuid().toString().equals(uuidQppCharWrite)) {
+                            writeCharacteristic = data;
+                        } else if (data.getProperties() == BluetoothGattCharacteristic.PROPERTY_NOTIFY) {
+                            gatt.setCharacteristicNotification(data, true);
+                            BluetoothGattDescriptor descriptor = data.getDescriptor(UUID.fromString(UUIDDes));
+                            descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                            gatt.writeDescriptor(descriptor);
+                        }
+                    }
                 }
             }
         }
@@ -219,6 +254,7 @@ public class BluetoothDetailInfoActivity extends AppCompatActivity {
         public void onCharacteristicRead(BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicRead(gatt, characteristic, status);
             Log.i(Tag, "onCharacteristicRead");
+//            BluetoothGattCharacteristic ch=new BluetoothGattCharacteristic()
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -242,7 +278,6 @@ public class BluetoothDetailInfoActivity extends AppCompatActivity {
             super.onCharacteristicWrite(gatt, characteristic, status);
             String writeCommand = TransferUtil.byte2HexStr(characteristic.getValue());
             Log.i(Tag, "onCharacteristicWrite characteristic:" + writeCommand);
-
         }
 
         @Override
@@ -256,9 +291,9 @@ public class BluetoothDetailInfoActivity extends AppCompatActivity {
                         pairList.clear();
                     byte[] data = characteristic.getValue();
                     String hexString = TransferUtil.byte2SpecificFormatHexStr(data);
-                    String time = new SimpleDateFormat("hh:mm:ss").format(new Date(System.currentTimeMillis()));
+                    String des = DataDeSerializationUtil.deSerializeData(data);
                     if (!TextUtils.isEmpty(hexString)) {
-                        pairList.add(new Pair<String, String>(hexString, time));
+                        pairList.add(new Pair<String, String>(hexString, des));
                     }
                     Log.i(Tag, "onCharacteristicChanged data:" + hexString);
                     adapter.notifyDataSetChanged();
