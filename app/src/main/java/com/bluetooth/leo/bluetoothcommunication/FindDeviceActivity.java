@@ -22,7 +22,7 @@ import com.leo.potato.PotatoInjection;
 
 import java.util.ArrayList;
 
-public class FindDeviceActivity extends AppCompatActivity {
+public class FindDeviceActivity extends BaseActivity {
     @PotatoInjection(idStr = "begin_scan", click = "beginScanDevices")
     Button beginScan;
     @PotatoInjection(idStr = "recycleView")
@@ -39,12 +39,15 @@ public class FindDeviceActivity extends AppCompatActivity {
     private Adapter chessAdapter;
 //    private ScanBluetoothDevicesCallback scanCallback;
 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Potato.initInjection(this);
+    protected void postInflate() {
         init();
+    }
+
+    @Override
+    protected int inflateRootView() {
+        return R.layout.activity_main;
     }
 
     private void init() {

@@ -1,6 +1,9 @@
 package com.bluetooth.leo.bluetoothcommunication.util;
 
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 /**
  * Created by leo on 2016/8/26.
@@ -15,8 +18,10 @@ public class CommandUtil {
         public static final String PARAM_SYNC = "01";
         public static final String MOTION_DATA = "02";
         public static final String SLEEP_DATA = "03";
-        public static final String HEART_RATE_DATA = "04";
-        public static final String SINGALE_HEART_RATE_TEST = "05";
+        public static final String MOVE_HEART_RATE = "04";
+        public static final String SINGALE_HEART_RATE = "05";
+        public static final String CURRENT_TIME_HEART_RATE = "F5";
+        public static final String SPECIFIC_TIME_HEART_RATE = "F6";
         public static final String ALARM_DATA = "06";
         public static final String MAKE_FRIENDS = "07";
         public static final String TRANSPARENT_TRANSMISSION = "08";
@@ -44,10 +49,10 @@ public class CommandUtil {
         return TransferUtil.byte2HexStr(new byte[]{check});
     }
 
-    public static String generateCommand(String type) {
+    public static String generateCommand(String command) {
         StringBuilder result = new StringBuilder();
         result.append(FIX_APP_ETF_TAG);
-        result.append(type);
+        result.append(command);
         result.append(FIX_END_TAG);
         byte[] temp = new byte[1];
         String lrc = generateVerifyByte(TransferUtil.hex2Bytes1(result.toString()));
@@ -60,6 +65,46 @@ public class CommandUtil {
         result.insert(0, FIX_START_TAG);
         return result.toString();
     }
+    public static String generateCommand(String command,Date date) {
+        long timeMills=0;
+        if(date!=null)
+            timeMills=date.getTime();
+//        SimpleDateFormat sdf=new SimpleDateFormat(pattern);
+        StringBuilder result = new StringBuilder();
+        result.append(FIX_APP_ETF_TAG);
+        switch (command.substring(0,2)){
+            case Command.TIME_SYNC:
+                result.append(Command.TIME_SYNC);
+                String utc=Long.toHexString(timeMills==0?new Date().getTime()/1000:timeMills/1000);
+                if(utc.length()<8){
+                    for(int i=0;i<8-utc.length();i++){
+                        utc="0"+utc;
+                    }
+                }
+                result.append(utc);
+                break;
+            case Command.PARAM_SYNC:
+                result.append(Command.PARAM_SYNC);
 
+                break;
+            case Command.SPECIFIC_TIME_HEART_RATE:
+                break;
+
+        }
+        result.append(FIX_END_TAG);
+        byte[] temp = new byte[1];
+        String lrc = generateVerifyByte(TransferUtil.hex2Bytes1(result.toString()));
+        result.append(lrc);
+        String len = Integer.toHexString(result.length() / 2);
+        if (len.length() == 1) {
+            len = "0" + len;
+        }
+        result.insert(0, len);
+        result.insert(0, FIX_START_TAG);
+        return result.toString();
+    }
+//    public static String generateSyncTimeCommand(String ){
+//
+//    }
 
 }

@@ -9,6 +9,7 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.util.Pair;
 import android.os.Bundle;
@@ -41,7 +42,7 @@ import java.util.List;
 import java.util.UUID;
 
 
-public class BluetoothDetailInfoActivity extends Activity {
+public class BluetoothDetailInfoActivity extends BaseActivity {
     private static final String Tag = "com.leo.wang";
     @PotatoInjection(id = R.id.btnSendCommand, click = "sendCommand")
     Button btnSendCommand;
@@ -65,17 +66,18 @@ public class BluetoothDetailInfoActivity extends Activity {
     private static final String UUIDDes = "00002902-0000-1000-8000-00805f9b34fb";
     protected static String uuidQppCharNotify = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
 
+    public static final int COMMAND_REQUEST_CODE=1001;
+    public static final String COMMAND_CONTENT="command_content";
+
 
     List<Pair<String, String>> pairList = new ArrayList<>();
     private BluetoothDataAdapter adapter;
 
     boolean isConnected = false;
 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bluetooth_detail_info);
-        Potato.initInjection(this);
+    protected void postInflate() {
         if (getIntent() != null) {
             Bundle bundle = getIntent().getBundleExtra(FindDeviceActivity.BUNDLE_INFO);
             device = bundle.getParcelable(FindDeviceActivity.DEVICE_INFO);
@@ -86,11 +88,30 @@ public class BluetoothDetailInfoActivity extends Activity {
         initRecyclerView();
     }
 
+    @Override
+    protected int inflateRootView() {
+        return R.layout.activity_bluetooth_detail_info;
+    }
+
     void showCommandTip(View v) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.command_instruction));
-        builder.setMessage(R.string.command_detail);
-        builder.show();
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle(getString(R.string.command_instruction));
+//        builder.setMessage(R.string.command_detail);
+//        builder.show();
+        startActivity(CommandDetailActivity.class,COMMAND_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==COMMAND_REQUEST_CODE){
+            String command=data.getStringExtra(COMMAND_CONTENT);
+            byte[] byteArray = TransferUtil.hex2Bytes1(command);
+            if (writeCharacteristic != null) {
+                writeCharacteristic.setValue(byteArray);
+                boolean isSucces = mGatt.writeCharacteristic(writeCharacteristic);
+            }
+        }
     }
 
     private void deserialize() {
