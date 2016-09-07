@@ -82,7 +82,6 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
             Bundle bundle = getIntent().getBundleExtra(FindDeviceActivity.BUNDLE_INFO);
             device = bundle.getParcelable(FindDeviceActivity.DEVICE_INFO);
         }
-//        deserialize();
         addTextWatcher();
         startConnect();
         initRecyclerView();
@@ -114,11 +113,6 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
         }
     }
 
-    private void deserialize() {
-        String hexString = "020EB10102961197578c190000010362";
-        byte[] orgin = TransferUtil.hex2Bytes1(hexString);
-        DataDeSerializationUtil.deSerializationMoveData(orgin);
-    }
 
     private void initRecyclerView() {
         rvData.setLayoutManager(new LinearLayoutManager(this));
@@ -129,6 +123,7 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mGatt.disconnect();
     }
 
     private void addTextWatcher() {
@@ -180,6 +175,7 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
     }
 
     private void startConnect() {
+
         mGatt = device.connectGatt(BluetoothDetailInfoActivity.this, true, new ChessBluetoothGatt());
     }
 
@@ -255,7 +251,6 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
                 return;
             for (BluetoothGattService server : services) {
                 if (server.getUuid().toString().equals(uuidQppService)) {
-//                BluetoothGattService server = gatt.getService(UUID.fromString(uuidQppService));
                     List<BluetoothGattCharacteristic> datas = server.getCharacteristics();
                     for (BluetoothGattCharacteristic data : datas) {
                         if (data.getUuid().toString().equals(uuidQppCharWrite)) {
@@ -275,23 +270,6 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
         public void onCharacteristicRead(BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicRead(gatt, characteristic, status);
             Log.i(Tag, "onCharacteristicRead");
-//            BluetoothGattCharacteristic ch=new BluetoothGattCharacteristic()
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    byte[] data = characteristic.getValue();
-                    String hexString = TransferUtil.byte2HexStr(data);
-                    String time = new SimpleDateFormat("hh:mm:ss").format(new Date(System.currentTimeMillis()));
-                    if (!TextUtils.isEmpty(hexString)) {
-                        pairList.add(new Pair<String, String>(hexString, time));
-                    }
-                    Log.i(Tag, "onCharacteristicRead data:" + hexString);
-                    adapter.notifyDataSetChanged();
-//                    int lastNum = data[data.length - 1];
-//                    lastNum = lastNum & 0xff;
-//                    decodeData(lastNum);
-                }
-            });
         }
 
         @Override

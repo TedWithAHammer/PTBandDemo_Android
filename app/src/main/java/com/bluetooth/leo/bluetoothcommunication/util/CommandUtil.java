@@ -1,8 +1,13 @@
 package com.bluetooth.leo.bluetoothcommunication.util;
 
 import java.sql.ResultSet;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 /**
@@ -65,20 +70,19 @@ public class CommandUtil {
         result.insert(0, FIX_START_TAG);
         return result.toString();
     }
-    public static String generateCommand(String command,Date date) {
-        long timeMills=0;
-        if(date!=null)
-            timeMills=date.getTime();
+
+    public static String generateCommand(String command, Object... param) {
 //        SimpleDateFormat sdf=new SimpleDateFormat(pattern);
         StringBuilder result = new StringBuilder();
         result.append(FIX_APP_ETF_TAG);
-        switch (command.substring(0,2)){
+        switch (command.substring(0, 2)) {
             case Command.TIME_SYNC:
                 result.append(Command.TIME_SYNC);
-                String utc=Long.toHexString(timeMills==0?new Date().getTime()/1000:timeMills/1000);
-                if(utc.length()<8){
-                    for(int i=0;i<8-utc.length();i++){
-                        utc="0"+utc;
+                String utc = Long.toHexString(generateGMTTimeStamp(System.currentTimeMillis() / 1000));
+                utc = reverseHex(utc);
+                if (utc.length() < 8) {
+                    for (int i = 0; i < 8 - utc.length(); i++) {
+                        utc = "0" + utc;
                     }
                 }
                 result.append(utc);
@@ -103,6 +107,19 @@ public class CommandUtil {
         result.insert(0, FIX_START_TAG);
         return result.toString();
     }
+
+    private static String reverseHex(String utc) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = utc.length() - 1; i > -1; i = i - 2) {
+            sb.append(utc.substring(i - 1, i + 1));
+        }
+        return sb.toString();
+    }
+
+    public static long generateGMTTimeStamp(long utc){
+        return utc+8*60*60;
+    }
+
 //    public static String generateSyncTimeCommand(String ){
 //
 //    }

@@ -4,7 +4,7 @@
     <string name="send_command">发送指令</string>
     <string name="lost_package_num">丢包个数</string>
     <string name="command_tip">请输入16进制数</string>
-    <string name="command_instruction">命令说明</string>
+    <string name="command_instruction">命令列表</string>
     <string name="command_detail">运动数据命令:0201 实际指令:0206B100020103B1
        \n睡眠数据:0301 实际指令:0206B100030103B0
         \n运动心率:0401 实际指令:0206B100040103B7
