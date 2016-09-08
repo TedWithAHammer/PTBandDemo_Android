@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.support.v4.util.Pair;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bluetooth.leo.bluetoothcommunication.dfu.DfuService;
 import com.bluetooth.leo.bluetoothcommunication.util.CommandUtil;
 import com.bluetooth.leo.bluetoothcommunication.util.DataDeSerializationUtil;
 import com.bluetooth.leo.bluetoothcommunication.util.TransferUtil;
@@ -35,11 +37,14 @@ import com.leo.baseadapter.RecyclerAdapter;
 import com.leo.potato.Potato;
 import com.leo.potato.PotatoInjection;
 
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
+import no.nordicsemi.android.dfu.DfuServiceInitiator;
 
 
 public class BluetoothDetailInfoActivity extends BaseActivity {
@@ -66,8 +71,8 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
     private static final String UUIDDes = "00002902-0000-1000-8000-00805f9b34fb";
     protected static String uuidQppCharNotify = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
 
-    public static final int COMMAND_REQUEST_CODE=1001;
-    public static final String COMMAND_CONTENT="command_content";
+    public static final int COMMAND_REQUEST_CODE = 1001;
+    public static final String COMMAND_CONTENT = "command_content";
 
 
     List<Pair<String, String>> pairList = new ArrayList<>();
@@ -97,20 +102,37 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
 //        builder.setTitle(getString(R.string.command_instruction));
 //        builder.setMessage(R.string.command_detail);
 //        builder.show();
-        startActivity(CommandDetailActivity.class,COMMAND_REQUEST_CODE);
+        startActivity(CommandDetailActivity.class, COMMAND_REQUEST_CODE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==COMMAND_REQUEST_CODE){
-            String command=data.getStringExtra(COMMAND_CONTENT);
+        if (requestCode == COMMAND_REQUEST_CODE) {
+            if (data == null)
+                return;
+            String command = data.getStringExtra(COMMAND_CONTENT);
+            if (command.contains("file")) {
+                uploadOTC(command);
+                return;
+            }
             byte[] byteArray = TransferUtil.hex2Bytes1(command);
             if (writeCharacteristic != null) {
                 writeCharacteristic.setValue(byteArray);
                 boolean isSucces = mGatt.writeCharacteristic(writeCharacteristic);
             }
         }
+    }
+
+    private void uploadOTC(String command) {
+        Uri uri = Uri.parse(command);
+        if (uri == null)
+            return;
+        final DfuServiceInitiator starter = new DfuServiceInitiator(device.getAddress())
+                .setDeviceName(device.getName())
+                .setKeepBond(true);
+        starter.setZip(uri, uri.getPath());
+        starter.start(this, DfuService.class);
     }
 
 

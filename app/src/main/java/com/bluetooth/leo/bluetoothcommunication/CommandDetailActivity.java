@@ -2,15 +2,13 @@ package com.bluetooth.leo.bluetoothcommunication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.util.Pair;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.bluetooth.leo.bluetoothcommunication.util.CommandUtil;
-import com.leo.baseadapter.BaseAdapter;
 import com.leo.baseadapter.BaseViewHolder;
 import com.leo.baseadapter.RecyclerAdapter;
 import com.leo.potato.PotatoInjection;
@@ -23,7 +21,9 @@ public class CommandDetailActivity extends BaseActivity {
     @PotatoInjection(idStr = "rvCommands")
     RecyclerView rvCommands;
 
-    public static final int COMMADN_RESULT_CODE=1002;
+    public static final int COMMAND_RESULT_CODE =1002;
+    public static final int FILE_CHOOSE_CALLBACK=1003;
+    public static final String UPLOAD_OTC="upload_otc";
 
     @Override
     protected void postInflate() {
@@ -38,14 +38,32 @@ public class CommandDetailActivity extends BaseActivity {
     RecyclerViewClickListener listener=new RecyclerViewClickListener() {
         @Override
         public void onItemClick(View v, int position, Pair<String, String> data) {
+
             Intent intent=new Intent();
+            if(data.second.equals(UPLOAD_OTC)){
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                intent.setType("zip/*");
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(intent,FILE_CHOOSE_CALLBACK);
+                return;
+            }
             intent.putExtra(BluetoothDetailInfoActivity.COMMAND_CONTENT,data.second);
-//            String command=data.second;
-//            sw(command.substring(9,11);
-            setResult(COMMADN_RESULT_CODE,intent);
+            setResult(COMMAND_RESULT_CODE,intent);
             finish();
         }
     };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==FILE_CHOOSE_CALLBACK){
+            Intent intent=new Intent();
+            Uri uri=data.getData();
+            intent.putExtra(BluetoothDetailInfoActivity.COMMAND_CONTENT,uri.toString());
+            setResult(COMMAND_RESULT_CODE,intent);
+            finish();
+        }
+    }
 
     private List<Pair<String, String>> generateCommands() {
         List<Pair<String,String>> ret=new ArrayList<>();
@@ -58,14 +76,18 @@ public class CommandDetailActivity extends BaseActivity {
         ret.add(sleepData);
         Pair<String,String> moveHeart=new Pair<>("运动心率", CommandUtil.generateCommand("0401"));
         ret.add(moveHeart);
-        Pair<String,String> singleHeart=new Pair<>("单次测心率", CommandUtil.generateCommand("0501"));
-        ret.add(singleHeart);
+        Pair<String,String> startSingleHeart=new Pair<>("打开单次测心率", CommandUtil.generateCommand("0501"));
+        ret.add(startSingleHeart);
+        Pair<String,String> stopSingleHeart=new Pair<>("关闭单次测心率", CommandUtil.generateCommand("0500"));
+        ret.add(stopSingleHeart);
         Pair<String,String> stopCurrentHeart=new Pair<>("关闭实时心率", CommandUtil.generateCommand("F500"));
         ret.add(stopCurrentHeart);
         Pair<String,String> openCurrentHeart=new Pair<>("开启实时心率", CommandUtil.generateCommand("F501"));
         ret.add(openCurrentHeart);
         Pair<String,String> continueCurrentHeart=new Pair<>("继续实时心率", CommandUtil.generateCommand("F502"));
         ret.add(continueCurrentHeart);
+        Pair<String,String> uploadOTC=new Pair<>("固件更新",UPLOAD_OTC);
+        ret.add(uploadOTC);
 //        Pair<String,String> syncTime=new Pair<>("同步时间", CommandUtil.generateCommand("0001"));
 //        Pair<String,String> syncTime=new Pair<>("同步时间", CommandUtil.generateCommand("0001"));
 
