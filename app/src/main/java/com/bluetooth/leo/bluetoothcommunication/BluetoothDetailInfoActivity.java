@@ -267,26 +267,26 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
         }
 
 
-        private void filterTheData(BluetoothGatt gatt) {
-            List<BluetoothGattService> services = gatt.getServices();
-            if (services.size() == 0)
-                return;
-            for (BluetoothGattService server : services) {
-                if (server.getUuid().toString().equals(uuidQppService)) {
-                    List<BluetoothGattCharacteristic> datas = server.getCharacteristics();
-                    for (BluetoothGattCharacteristic data : datas) {
-                        if (data.getUuid().toString().equals(uuidQppCharWrite)) {
-                            writeCharacteristic = data;
-                        } else if (data.getProperties() == BluetoothGattCharacteristic.PROPERTY_NOTIFY) {
-                            gatt.setCharacteristicNotification(data, true);
-                            BluetoothGattDescriptor descriptor = data.getDescriptor(UUID.fromString(UUIDDes));
-                            descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                            gatt.writeDescriptor(descriptor);
+            private void filterTheData(BluetoothGatt gatt) {
+                List<BluetoothGattService> services = gatt.getServices();
+                if (services.size() == 0)
+                    return;
+                for (BluetoothGattService server : services) {
+                    if (server.getUuid().toString().equals(uuidQppService)) {
+                        List<BluetoothGattCharacteristic> datas = server.getCharacteristics();
+                        for (BluetoothGattCharacteristic data : datas) {
+                            if (data.getUuid().toString().equals(uuidQppCharWrite)) {
+                                writeCharacteristic = data;
+                            } else if (data.getProperties() == BluetoothGattCharacteristic.PROPERTY_NOTIFY) {
+                                gatt.setCharacteristicNotification(data, true);
+                                BluetoothGattDescriptor descriptor = data.getDescriptor(UUID.fromString(UUIDDes));
+                                descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                                gatt.writeDescriptor(descriptor);
+                            }
                         }
                     }
                 }
             }
-        }
 
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic, int status) {
