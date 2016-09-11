@@ -65,6 +65,8 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
     ProgressBar pbConnecting;
     @PotatoInjection(id = R.id.tvCommandInstruction, click = "showCommandTip")
     TextView tvCommandInstruction;
+    @PotatoInjection(id = R.id.tvPercentage)
+    TextView tvPercentage;
 
 
     private BluetoothDevice device;
@@ -185,6 +187,12 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
         @Override
         public void onProgressChanged(final String deviceAddress, final int percent, final float speed, final float avgSpeed, final int currentPart, final int partsTotal) {
             Log.i(Tag, "onProgressChanged" + " info:" + deviceAddress + " percent" + percent);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    tvPercentage.setText("percentage:" + percent + "%");
+                }
+            });
         }
 
         @Override
