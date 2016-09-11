@@ -2,6 +2,7 @@ package com.bluetooth.leo.bluetoothcommunication.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by leo on 2016/9/4.
@@ -177,7 +178,7 @@ public class DataDeSerializationUtil {
     public static String formatTimeMills(String mills) {
         long timeMills = Long.valueOf(mills, 16) * 1000;
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-//        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date date = new Date(timeMills);
         return sdf.format(date);
     }
