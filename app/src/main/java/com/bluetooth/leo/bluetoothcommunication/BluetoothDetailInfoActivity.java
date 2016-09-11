@@ -190,7 +190,7 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    tvPercentage.setText("percentage:" + percent + "%");
+                    tvPercentage.setText("ota percentage:" + percent + "%");
                 }
             });
         }

@@ -92,10 +92,10 @@ public class CommandDetailActivity extends BaseActivity {
         ret.add(addSpecificTimeHeart);
         Pair<String, String> deleteAllSpecificTimeHeart = new Pair<>("删除所有时间定时心率", CommandUtil.generateCommand(CommandUtil.Command.DELETE_ALL_SPECIFIC_TIME_HEART_RATE, new Date()));
         ret.add(deleteAllSpecificTimeHeart);
-        Pair<String, String> motionWithoutHeart = new Pair<>("运动时不测心率", CommandUtil.generateCommand(CommandUtil.Command.SETTING_MOTION_WITHOUT_HEART_INTERVAL, 1));
-        ret.add(motionWithoutHeart);
-        Pair<String, String> motionWithHeart = new Pair<>("运动时测心率", CommandUtil.generateCommand(CommandUtil.Command.SETTING_MOTION_WITH_HEART_INTERVAL, 1));
-        ret.add(motionWithHeart);
+//        Pair<String, String> motionWithoutHeart = new Pair<>("运动时不测心率", CommandUtil.generateCommand(CommandUtil.Command.SETTING_MOTION_WITHOUT_HEART_INTERVAL, 1));
+//        ret.add(motionWithoutHeart);
+//        Pair<String, String> motionWithHeart = new Pair<>("运动时测心率", CommandUtil.generateCommand(CommandUtil.Command.SETTING_MOTION_WITH_HEART_INTERVAL, 1));
+//        ret.add(motionWithHeart);
 
         Pair<String, String> alarm = new Pair<>("起床闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
                 CommandUtil.AlarmOperationType.ADD,
@@ -130,6 +130,10 @@ public class CommandDetailActivity extends BaseActivity {
         ret.add(alarmDelete);
         Pair<String, String> uploadOTC = new Pair<>("固件更新", UPLOAD_OTC);
         ret.add(uploadOTC);
+        Pair<String, String> voltageAchieve = new Pair<>("电压获取", CommandUtil.generateCommand(CommandUtil.Command.DEVICE_VOLTAGE));
+        ret.add(voltageAchieve);
+        Pair<String, String> versionAchieve = new Pair<>("版本获取", CommandUtil.generateCommand(CommandUtil.Command.DEVICE_FIRMWARE_VERSION));
+        ret.add(versionAchieve);
         return ret;
     }
 

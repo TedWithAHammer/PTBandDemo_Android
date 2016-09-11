@@ -12,7 +12,7 @@ public class DataDeSerializationUtil {
 
     private static String pattern = "yyyy-MM-dd HH:mm:ss";
 
-    private static int[] voltage = new int[]{
+    private static int[] voltageRangeArray = new int[]{
             4140, 4111, 4101, 4092, 4083, 4073, 4065, 4056, 4040, 4033,
             4026, 4019, 4012, 4004, 3996, 3987, 3979, 3970, 3954, 3946,
             3940, 3932, 3926, 3919, 3913, 3907, 3901, 3895, 3884, 3878,
@@ -51,11 +51,13 @@ public class DataDeSerializationUtil {
                 break;
             case 6:
                 result = deSerializeAlarmData(origin);
+                break;
             case 10:
                 result = deSerializeVoltageData(origin);
                 break;
             case 11:
                 result = deSerializationFirmwareVersion(origin);
+                break;
         }
         return result;
     }
@@ -71,7 +73,16 @@ public class DataDeSerializationUtil {
         };
         String hexStr = TransferUtil.byte2HexStr(voltageByte);
         int voltage = Integer.valueOf(hexStr, 16);
-        return null;
+        return analyseVoltagePecentage(voltage);
+    }
+
+    private static String analyseVoltagePecentage(int voltage) {
+        for (int i = 0; i < voltageRangeArray.length - 1; i++) {
+            if (voltage < voltageRangeArray[i] && voltage > voltageRangeArray[i + 1]) {
+                return "voltage:" + (100 - i) + "%";
+            }
+        }
+        return "voltage:0%";
     }
 
     private static String deSerializeAlarmData(byte[] origin) {
