@@ -22,6 +22,8 @@ public class CommandUtil {
         public static final String STOP_CURRENT_TIME_HEART_RATE = "F500";//current heart data(data part 1."00" stop 2."01" start 3."02" continue)
         public static final String START_CURRENT_TIME_HEART_RATE = "F501";
         public static final String CONTINUE_CURRENT_TIME_HEART_RATE = "F502";
+        public static final String DEVICE_VOLTAGE = "0A";
+        public static final String DEVICE_FIRMWARE_VERSION = "0B";
         //UTC OR WITH TIME COMMAND
         public static final String TIME_SYNC = "00";//sync time
         public static final String DELETE_SPECIFIC_TIME_HEART_RATE = "F600";//specific heart data(data part1:(operation type1."00" delete specific time 2."01" add specific time 3."02" delete all time part)data part2.utc timemills)

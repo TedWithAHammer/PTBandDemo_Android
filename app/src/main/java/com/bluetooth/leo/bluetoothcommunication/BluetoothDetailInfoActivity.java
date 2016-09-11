@@ -1,6 +1,7 @@
 package com.bluetooth.leo.bluetoothcommunication;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
@@ -44,7 +45,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import no.nordicsemi.android.dfu.DfuProgressListener;
+import no.nordicsemi.android.dfu.DfuProgressListenerAdapter;
 import no.nordicsemi.android.dfu.DfuServiceInitiator;
+import no.nordicsemi.android.dfu.DfuServiceListenerHelper;
 
 
 public class BluetoothDetailInfoActivity extends BaseActivity {
@@ -105,6 +109,7 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
         startActivity(CommandDetailActivity.class, COMMAND_REQUEST_CODE);
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -130,11 +135,63 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
             return;
         final DfuServiceInitiator starter = new DfuServiceInitiator(device.getAddress())
                 .setDeviceName(device.getName())
-                .setKeepBond(true);
+                .setKeepBond(false);
         starter.setZip(uri, uri.getPath());
         starter.start(this, DfuService.class);
     }
 
+    private final DfuProgressListener mDfuProgressListener = new DfuProgressListenerAdapter() {
+        @Override
+        public void onDeviceConnecting(final String deviceAddress) {
+            Log.i(Tag, "onDeviceConnecting" + " info:" + deviceAddress);
+        }
+
+        @Override
+        public void onDfuProcessStarting(final String deviceAddress) {
+            Log.i(Tag, "onDfuProcessStarting" + " info:" + deviceAddress);
+        }
+
+        @Override
+        public void onEnablingDfuMode(final String deviceAddress) {
+            Log.i(Tag, "onEnablingDfuMode" + " info:" + deviceAddress);
+        }
+
+        @Override
+        public void onFirmwareValidating(final String deviceAddress) {
+            Log.i(Tag, "onFirmwareValidating" + " info:" + deviceAddress);
+        }
+
+        @Override
+        public void onDeviceDisconnecting(final String deviceAddress) {
+            Log.i(Tag, "onDeviceDisconnecting" + " info:" + deviceAddress);
+        }
+
+        @Override
+        public void onDfuCompleted(final String deviceAddress) {
+            Log.i(Tag, "onDfuCompleted" + " info:" + deviceAddress);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(BluetoothDetailInfoActivity.this, "dfu finish", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        @Override
+        public void onDfuAborted(final String deviceAddress) {
+            Log.i(Tag, "onDfuAborted" + " info:" + deviceAddress);
+        }
+
+        @Override
+        public void onProgressChanged(final String deviceAddress, final int percent, final float speed, final float avgSpeed, final int currentPart, final int partsTotal) {
+            Log.i(Tag, "onProgressChanged" + " info:" + deviceAddress + " percent" + percent);
+        }
+
+        @Override
+        public void onError(final String deviceAddress, final int error, final int errorType, final String message) {
+            Log.i(Tag, "onError" + " error:" + error + " message:" + message);
+        }
+    };
 
     private void initRecyclerView() {
         rvData.setLayoutManager(new LinearLayoutManager(this));
@@ -218,6 +275,17 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        DfuServiceListenerHelper.registerProgressListener(this, mDfuProgressListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        DfuServiceListenerHelper.unregisterProgressListener(this, mDfuProgressListener);
+    }
 
     BluetoothGattCharacteristic writeCharacteristic;
 
@@ -267,26 +335,26 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
         }
 
 
-            private void filterTheData(BluetoothGatt gatt) {
-                List<BluetoothGattService> services = gatt.getServices();
-                if (services.size() == 0)
-                    return;
-                for (BluetoothGattService server : services) {
-                    if (server.getUuid().toString().equals(uuidQppService)) {
-                        List<BluetoothGattCharacteristic> datas = server.getCharacteristics();
-                        for (BluetoothGattCharacteristic data : datas) {
-                            if (data.getUuid().toString().equals(uuidQppCharWrite)) {
-                                writeCharacteristic = data;
-                            } else if (data.getProperties() == BluetoothGattCharacteristic.PROPERTY_NOTIFY) {
-                                gatt.setCharacteristicNotification(data, true);
-                                BluetoothGattDescriptor descriptor = data.getDescriptor(UUID.fromString(UUIDDes));
-                                descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                                gatt.writeDescriptor(descriptor);
-                            }
+        private void filterTheData(BluetoothGatt gatt) {
+            List<BluetoothGattService> services = gatt.getServices();
+            if (services.size() == 0)
+                return;
+            for (BluetoothGattService server : services) {
+                if (server.getUuid().toString().equals(uuidQppService)) {
+                    List<BluetoothGattCharacteristic> datas = server.getCharacteristics();
+                    for (BluetoothGattCharacteristic data : datas) {
+                        if (data.getUuid().toString().equals(uuidQppCharWrite)) {
+                            writeCharacteristic = data;
+                        } else if (data.getProperties() == BluetoothGattCharacteristic.PROPERTY_NOTIFY) {
+                            gatt.setCharacteristicNotification(data, true);
+                            BluetoothGattDescriptor descriptor = data.getDescriptor(UUID.fromString(UUIDDes));
+                            descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                            gatt.writeDescriptor(descriptor);
                         }
                     }
                 }
             }
+        }
 
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic, int status) {
@@ -310,9 +378,9 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
                 public void run() {
                     if (pairList.size() == 50)
                         pairList.clear();
-                        byte[] data = characteristic.getValue();
-                        String hexString = TransferUtil.byte2SpecificFormatHexStr(data);
-                        String des = DataDeSerializationUtil.deSerializeData(data);
+                    byte[] data = characteristic.getValue();
+                    String hexString = TransferUtil.byte2SpecificFormatHexStr(data);
+                    String des = DataDeSerializationUtil.deSerializeData(data);
                     if (!TextUtils.isEmpty(hexString)) {
                         pairList.add(new Pair<String, String>(hexString, des));
                     }

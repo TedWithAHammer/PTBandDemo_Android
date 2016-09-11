@@ -121,8 +121,8 @@ public class CommandDetailActivity extends BaseActivity {
                 CommandUtil.AlarmRepeatType.WEEKDAY,
                 new Date()));
         ret.add(alarmSleeping);
-//        Pair<String,String> uploadOTC=new Pair<>("固件更新",UPLOAD_OTC);
-//        ret.add(uploadOTC);
+        Pair<String,String> uploadOTC=new Pair<>("固件更新",UPLOAD_OTC);
+        ret.add(uploadOTC);
         return ret;
     }
 
