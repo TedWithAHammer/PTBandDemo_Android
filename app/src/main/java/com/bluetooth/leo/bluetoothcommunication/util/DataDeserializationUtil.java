@@ -1,9 +1,7 @@
 package com.bluetooth.leo.bluetoothcommunication.util;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 /**
  * Created by leo on 2016/9/4.
@@ -29,12 +27,12 @@ public class DataDeSerializationUtil {
 
     public static String deSerializeData(byte[] origin) {
         String result = "";
-        switch (origin[4]) {
+        switch (origin[4] & 0xff) {
             case 0:
                 result = deserializeTimeSyncData(origin);
                 break;
             case 2:
-                result = deSerializationMoveData(origin);
+                result = deSerializationMotionData(origin);
                 break;
             case 3:
                 break;
@@ -44,22 +42,42 @@ public class DataDeSerializationUtil {
             case 5:
                 result = deSerializeSingleHeartData(origin);
                 break;
-            case -11:
+            case 245:
                 result = deSerializeCurrentHeartData(origin);
                 break;
+            case 246:
+                result = deSerializeSpecificHeartData(origin);
+                break;
+            case 6:
+                result = deSerializeAlarmData(origin);
         }
         return result;
     }
 
+    private static String deSerializeAlarmData(byte[] origin) {
+        if (origin[5] == 1) {
+            return "收到，正常开始设置闹钟流程";
+        } else {
+            return "收到，但不处理：超出闹钟设置最大个数";
+        }
+    }
+
+    private static String deSerializeSpecificHeartData(byte[] origin) {
+        if (origin[6] == 1) {
+            return "收到，正常开始设置定时测心率流程";
+        } else {
+            return "收到，但不处理：超出定时测心率的最大个数";
+        }
+    }
+
     private static String deserializeTimeSyncData(byte[] origin) {
-        if (origin.length < 13)
+        if (origin.length < 8)
             return null;
-        byte[] mac = new byte[]{
-                origin[5], origin[6],
-                origin[7], origin[8],
-                origin[9], origin[10],
-        };
-        return TransferUtil.byte2SpecificFormatHexStr(origin);
+        if (origin[5] == 1) {
+            return "success";
+        } else {
+            return "failed";
+        }
     }
 
     public static String deSerializationSleepData(byte[] origin) {
@@ -92,7 +110,7 @@ public class DataDeSerializationUtil {
      * @param origin
      * @return
      */
-    public static String deSerializationMoveData(byte[] origin) {
+    public static String deSerializationMotionData(byte[] origin) {
         StringBuilder sb = new StringBuilder();
         if (origin.length < 16)
             return null;
