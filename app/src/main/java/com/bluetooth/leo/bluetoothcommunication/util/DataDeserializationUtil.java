@@ -9,7 +9,7 @@ import java.util.TimeZone;
  * Created by leo on 2016/9/4.
  */
 
-public class DataDeserializationUtil {
+public class DataDeSerializationUtil {
 
     private static String pattern = "yyyy-MM-dd HH:mm:ss";
 

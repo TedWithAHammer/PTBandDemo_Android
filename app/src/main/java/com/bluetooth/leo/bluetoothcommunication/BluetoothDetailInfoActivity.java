@@ -310,9 +310,9 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
                 public void run() {
                     if (pairList.size() == 50)
                         pairList.clear();
-                    byte[] data = characteristic.getValue();
-                    String hexString = TransferUtil.byte2SpecificFormatHexStr(data);
-                    String des = DataDeSerializationUtil.deSerializeData(data);
+                        byte[] data = characteristic.getValue();
+                        String hexString = TransferUtil.byte2SpecificFormatHexStr(data);
+                        String des = DataDeSerializationUtil.deSerializeData(data);
                     if (!TextUtils.isEmpty(hexString)) {
                         pairList.add(new Pair<String, String>(hexString, des));
                     }

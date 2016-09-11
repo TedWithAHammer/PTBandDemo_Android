@@ -67,30 +67,62 @@ public class CommandDetailActivity extends BaseActivity {
 
     private List<Pair<String, String>> generateCommands() {
         List<Pair<String,String>> ret=new ArrayList<>();
-        Pair<String,String> syncTime=new Pair<>("同步时间", CommandUtil.generateCommand("0001",new Date()));
+        Pair<String,String> syncTime=new Pair<>("同步时间", CommandUtil.generateCommand(CommandUtil.Command.TIME_SYNC,null));
         ret.add(syncTime);
 //        Pair<String,String> syncParam=new Pair<>("同步参数", CommandUtil.generateCommand("0101"));
-        Pair<String,String> moveData=new Pair<>("运动数据", CommandUtil.generateCommand("0201"));
+        Pair<String,String> moveData=new Pair<>("运动数据", CommandUtil.generateCommand(CommandUtil.Command.MOTION_DATA));
         ret.add(moveData);
-        Pair<String,String> sleepData=new Pair<>("睡眠数据", CommandUtil.generateCommand("0301"));
-        ret.add(sleepData);
-        Pair<String,String> moveHeart=new Pair<>("运动心率", CommandUtil.generateCommand("0401"));
+//        Pair<String,String> sleepData=new Pair<>("睡眠数据", CommandUtil.generateCommand("0301"));
+//        ret.add(sleepData);
+        Pair<String,String> moveHeart=new Pair<>("获取心率数据", CommandUtil.generateCommand(CommandUtil.Command.HEART_DATA_GET));
         ret.add(moveHeart);
-        Pair<String,String> startSingleHeart=new Pair<>("打开单次测心率", CommandUtil.generateCommand("0501"));
+        Pair<String,String> startSingleHeart=new Pair<>("单次测心率", CommandUtil.generateCommand(CommandUtil.Command.SINGALE_HEART_RATE));
         ret.add(startSingleHeart);
-        Pair<String,String> stopSingleHeart=new Pair<>("关闭单次测心率", CommandUtil.generateCommand("0500"));
-        ret.add(stopSingleHeart);
-        Pair<String,String> stopCurrentHeart=new Pair<>("关闭实时心率", CommandUtil.generateCommand("F500"));
-        ret.add(stopCurrentHeart);
-        Pair<String,String> openCurrentHeart=new Pair<>("开启实时心率", CommandUtil.generateCommand("F501"));
-        ret.add(openCurrentHeart);
-        Pair<String,String> continueCurrentHeart=new Pair<>("继续实时心率", CommandUtil.generateCommand("F502"));
-        ret.add(continueCurrentHeart);
-        Pair<String,String> uploadOTC=new Pair<>("固件更新",UPLOAD_OTC);
-        ret.add(uploadOTC);
-//        Pair<String,String> syncTime=new Pair<>("同步时间", CommandUtil.generateCommand("0001"));
-//        Pair<String,String> syncTime=new Pair<>("同步时间", CommandUtil.generateCommand("0001"));
 
+        Pair<String,String> stopCurrentHeart=new Pair<>("关闭实时心率", CommandUtil.generateCommand(CommandUtil.Command.STOP_CURRENT_TIME_HEART_RATE));
+        ret.add(stopCurrentHeart);
+        Pair<String,String> openCurrentHeart=new Pair<>("开启实时心率", CommandUtil.generateCommand(CommandUtil.Command.START_CURRENT_TIME_HEART_RATE));
+        ret.add(openCurrentHeart);
+        Pair<String,String> continueCurrentHeart=new Pair<>("继续实时心率", CommandUtil.generateCommand(CommandUtil.Command.CONTINUE_CURRENT_TIME_HEART_RATE));
+        ret.add(continueCurrentHeart);
+
+        Pair<String,String> deleteSpecificTimeHeart=new Pair<>("删除此时间定时心率", CommandUtil.generateCommand(CommandUtil.Command.DELETE_SPECIFIC_TIME_HEART_RATE,new Date()));
+        ret.add(deleteSpecificTimeHeart);
+        Pair<String,String> addSpecificTimeHeart=new Pair<>("添加此时间定时心率", CommandUtil.generateCommand(CommandUtil.Command.ADD_SPECIFIC_TIME_HEART_RATE,new Date()));
+        ret.add(addSpecificTimeHeart);
+        Pair<String,String> deleteAllSpecificTimeHeart=new Pair<>("删除所有时间定时心率", CommandUtil.generateCommand(CommandUtil.Command.DELETE_ALL_SPECIFIC_TIME_HEART_RATE,new Date()));
+        ret.add(deleteAllSpecificTimeHeart);
+        Pair<String,String> motionWithoutHeart=new Pair<>("运动时不测心率", CommandUtil.generateCommand(CommandUtil.Command.SETTING_MOTION_WITHOUT_HEART_INTERVAL,1));
+        ret.add(motionWithoutHeart);
+        Pair<String,String> motionWithHeart=new Pair<>("运动时测心率", CommandUtil.generateCommand(CommandUtil.Command.SETTING_MOTION_WITH_HEART_INTERVAL,1));
+        ret.add(motionWithHeart);
+
+        Pair<String,String> alarm=new Pair<>("起床闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
+                CommandUtil.AlarmOperationType.ADD,
+                CommandUtil.AlarmType.GETING_UP,
+                CommandUtil.AlarmRepeatType.WEEKDAY,
+                new Date()));
+        ret.add(alarm);
+        Pair<String,String> alarmLearning=new Pair<>("学习闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
+                CommandUtil.AlarmOperationType.ADD,
+                CommandUtil.AlarmType.LEARNING,
+                CommandUtil.AlarmRepeatType.WEEKDAY,
+                new Date()));
+        ret.add(alarmLearning);
+        Pair<String,String> alarmMotion=new Pair<>("运动闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
+                CommandUtil.AlarmOperationType.ADD,
+                CommandUtil.AlarmType.MOTION,
+                CommandUtil.AlarmRepeatType.WEEKDAY,
+                new Date()));
+        ret.add(alarmMotion);
+        Pair<String,String> alarmSleeping=new Pair<>("睡觉闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
+                CommandUtil.AlarmOperationType.ADD,
+                CommandUtil.AlarmType.SLEEPING,
+                CommandUtil.AlarmRepeatType.WEEKDAY,
+                new Date()));
+        ret.add(alarmSleeping);
+//        Pair<String,String> uploadOTC=new Pair<>("固件更新",UPLOAD_OTC);
+//        ret.add(uploadOTC);
         return ret;
     }
 
