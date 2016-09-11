@@ -67,7 +67,7 @@ public class CommandDetailActivity extends BaseActivity {
 
     private List<Pair<String, String>> generateCommands() {
         List<Pair<String,String>> ret=new ArrayList<>();
-        Pair<String,String> syncTime=new Pair<>("同步时间", CommandUtil.generateCommand(CommandUtil.Command.TIME_SYNC,null));
+        Pair<String,String> syncTime=new Pair<>("同步时间", CommandUtil.generateCommand(CommandUtil.Command.TIME_SYNC,new Date()));
         ret.add(syncTime);
 //        Pair<String,String> syncParam=new Pair<>("同步参数", CommandUtil.generateCommand("0101"));
         Pair<String,String> moveData=new Pair<>("运动数据", CommandUtil.generateCommand(CommandUtil.Command.MOTION_DATA));

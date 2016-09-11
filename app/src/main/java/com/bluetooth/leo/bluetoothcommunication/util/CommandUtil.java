@@ -98,9 +98,9 @@ public class CommandUtil {
         result.append(FIX_APP_ETF_TAG);
         result.append(command);
         String utc = "";
-        switch (command.substring(0, 2)) {
+        switch (command) {
             case Command.TIME_SYNC:
-                utc = Long.toHexString(generateGMTTimeStamp(System.currentTimeMillis() / 1000));
+                utc = Long.toHexString(generateGMTTimeStamp(((Date) param[0]).getTime() / 1000));
                 result.append(reverseHex(utc));
                 break;
 
@@ -110,7 +110,7 @@ public class CommandUtil {
                 if (param.length > 0) {
                     if (param[0] instanceof Date) {
                         //// TODO: 2016/9/11 toggle after 30 seconds
-                        utc = Long.toHexString(generateGMTTimeStamp(((Date) param[0]).getTime() / 1000)+30);
+                        utc = Long.toHexString(generateGMTTimeStamp(((Date) param[0]).getTime() / 1000) + 30);
                         result.append(reverseHex(utc));
                     }
                 } else {
@@ -120,10 +120,11 @@ public class CommandUtil {
             case Command.SETTING_MOTION_WITH_HEART_INTERVAL:
             case Command.SETTING_MOTION_WITHOUT_HEART_INTERVAL:
                 if (param.length > 0) {
-                    if (param[0] instanceof Long) {
-                        utc = Long.toHexString(((long) param[0]));
+                    if (param[0] instanceof Integer) {
+                        utc = Integer.toHexString(((Integer) param[0]));
                         if (utc.length() < 4) {
-                            for (int i = 0; i < 4 - utc.length(); i++) {
+                            int length = utc.length();
+                            for (int i = 0; i < 4 - length; i++) {
                                 utc = "0" + utc;
                             }
                         }
@@ -139,7 +140,7 @@ public class CommandUtil {
                     result.append(param[1]);
                     result.append(param[2]);
                     if (param[3] instanceof Date) {
-                        utc = Long.toHexString(generateGMTTimeStamp(((Date) param[3]).getTime() / 1000));
+                        utc = Long.toHexString(generateGMTTimeStamp(((Date) param[3]).getTime() / 1000+60));
                         result.append(reverseHex(utc));
                     }
                 } else {
