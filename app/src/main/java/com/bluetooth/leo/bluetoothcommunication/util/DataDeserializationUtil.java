@@ -50,8 +50,27 @@ public class DataDeSerializationUtil {
                 break;
             case 6:
                 result = deSerializeAlarmData(origin);
+            case 10:
+                result = deSerializeVoltageData(origin);
+                break;
+            case 11:
+                result = deSerializationFirmwareVersion(origin);
         }
         return result;
+    }
+
+    private static String deSerializationFirmwareVersion(byte[] origin) {
+        int version = origin[11] & 0xff;
+        return null;
+    }
+
+    private static String deSerializeVoltageData(byte[] origin) {
+        byte[] voltageByte = new byte[]{
+                origin[5], origin[6]
+        };
+        String hexStr = TransferUtil.byte2HexStr(voltageByte);
+        int voltage = Integer.valueOf(hexStr, 16);
+        return null;
     }
 
     private static String deSerializeAlarmData(byte[] origin) {

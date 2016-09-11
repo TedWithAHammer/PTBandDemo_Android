@@ -15,10 +15,10 @@ public class CommandUtil {
 
     public class Command {
         public static final String PARAM_SYNC = "01";
-        public static final String MOTION_DATA = "02";//get motion data
+        public static final String MOTION_DATA = "0201";//get motion data
         public static final String SLEEP_DATA = "03";
-        public static final String HEART_DATA_GET = "04";//get heart data(1.motion heart date 2.specific time heart data)
-        public static final String SINGALE_HEART_RATE = "05";// get single heart data
+        public static final String HEART_DATA_GET = "0401";//get heart data(1.motion heart date 2.specific time heart data)
+        public static final String SINGALE_HEART_RATE = "0501";// get single heart data
         public static final String STOP_CURRENT_TIME_HEART_RATE = "F500";//current heart data(data part 1."00" stop 2."01" start 3."02" continue)
         public static final String START_CURRENT_TIME_HEART_RATE = "F501";
         public static final String CONTINUE_CURRENT_TIME_HEART_RATE = "F502";
@@ -82,7 +82,6 @@ public class CommandUtil {
         result.append(FIX_APP_ETF_TAG);
         result.append(command);
         result.append(FIX_END_TAG);
-        byte[] temp = new byte[1];
         String lrc = generateVerifyByte(TransferUtil.hex2Bytes1(result.toString()));
         result.append(lrc);
         String len = Integer.toHexString(result.length() / 2);
