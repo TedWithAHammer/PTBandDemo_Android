@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,6 +68,9 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
     TextView tvCommandInstruction;
     @PotatoInjection(id = R.id.tvPercentage)
     TextView tvPercentage;
+    @PotatoInjection(id = R.id.layoutOtaTip)
+    RelativeLayout layoutOtaTip;
+
 
 
     private BluetoothDevice device;
