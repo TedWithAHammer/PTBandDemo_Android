@@ -16,14 +16,16 @@ public class CommandUtil {
     public class Command {
         public static final String PARAM_SYNC = "01";
         public static final String MOTION_DATA = "0201";//get motion data
-        public static final String SLEEP_DATA = "03";
+        public static final String SLEEP_DATA = "0301";
         public static final String HEART_DATA_GET = "0401";//get heart data(1.motion heart date 2.specific time heart data)
         public static final String SINGALE_HEART_RATE = "0501";// get single heart data
         public static final String STOP_CURRENT_TIME_HEART_RATE = "F500";//current heart data(data part 1."00" stop 2."01" start 3."02" continue)
         public static final String START_CURRENT_TIME_HEART_RATE = "F501";
         public static final String CONTINUE_CURRENT_TIME_HEART_RATE = "F502";
-        public static final String DEVICE_VOLTAGE = "0A";
-        public static final String DEVICE_FIRMWARE_VERSION = "0B";
+        public static final String DEVICE_VOLTAGE = "0A01";
+        public static final String DEVICE_FIRMWARE_VERSION = "0B01";
+        public static final String CALORIE = "0C01";
+
         //UTC OR WITH TIME COMMAND
         public static final String TIME_SYNC = "00";//sync time
         public static final String DELETE_SPECIFIC_TIME_HEART_RATE = "F600";//specific heart data(data part1:(operation type1."00" delete specific time 2."01" add specific time 3."02" delete all time part)data part2.utc timemills)

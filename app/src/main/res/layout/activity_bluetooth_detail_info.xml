@@ -37,20 +37,13 @@
             android:text="@string/send_command"
             android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/tvPercentage"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:gravity="center_vertical"
-            android:text="ota percentage if exist" />
 
         <TextView
             android:id="@+id/tvCommandInstruction"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
-            android:background="#aa99cc"
+            android:layout_alignParentEnd="true"
+            android:background="#40E0D0"
             android:gravity="center"
             android:text="@string/command_instruction" />
     </RelativeLayout>
@@ -78,4 +71,27 @@
         android:text="@string/lost_package_num"
         android:textSize="18sp"
         android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@+id/layoutOtaTip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <ProgressBar
+            android:id="@+id/progressbarOta"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@+id/tvPercentage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/progressbarOta"
+            android:layout_marginTop="3dp"
+            android:text="OTA PROCESS START"
+            android:textColor="#FF4500"
+            android:textSize="16sp" />
+    </RelativeLayout>
 </RelativeLayout>

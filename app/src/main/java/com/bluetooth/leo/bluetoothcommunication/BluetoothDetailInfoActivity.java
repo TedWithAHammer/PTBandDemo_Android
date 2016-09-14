@@ -79,6 +79,7 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
 
     public static final int COMMAND_REQUEST_CODE = 1001;
     public static final String COMMAND_CONTENT = "command_content";
+    public static final String COMMAND_NAME = "command_name";
 
 
     List<Pair<String, String>> pairList = new ArrayList<>();
@@ -119,6 +120,8 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
             if (data == null)
                 return;
             String command = data.getStringExtra(COMMAND_CONTENT);
+            String commandName = data.getStringExtra(COMMAND_NAME);
+            Toast.makeText(this, commandName, Toast.LENGTH_SHORT).show();
             if (command.contains("file")) {
                 uploadOTC(command);
                 return;
@@ -190,7 +193,7 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    tvPercentage.setText("ota percentage:" + percent + "%");
+                    tvPercentage.setText("CURRENT PERCENTAGE:" + percent + "%");
                 }
             });
         }

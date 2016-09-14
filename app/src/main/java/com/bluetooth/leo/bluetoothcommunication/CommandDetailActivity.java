@@ -48,6 +48,7 @@ public class CommandDetailActivity extends BaseActivity {
                 return;
             }
             intent.putExtra(BluetoothDetailInfoActivity.COMMAND_CONTENT, data.second);
+            intent.putExtra(BluetoothDetailInfoActivity.COMMAND_NAME, data.first);
             setResult(COMMAND_RESULT_CODE, intent);
             finish();
         }
@@ -60,6 +61,7 @@ public class CommandDetailActivity extends BaseActivity {
             Intent intent = new Intent();
             Uri uri = data.getData();
             intent.putExtra(BluetoothDetailInfoActivity.COMMAND_CONTENT, uri.toString());
+            intent.putExtra(BluetoothDetailInfoActivity.COMMAND_NAME, "OTA升級");
             setResult(COMMAND_RESULT_CODE, intent);
             finish();
         }
@@ -134,6 +136,8 @@ public class CommandDetailActivity extends BaseActivity {
         ret.add(voltageAchieve);
         Pair<String, String> versionAchieve = new Pair<>("版本获取", CommandUtil.generateCommand(CommandUtil.Command.DEVICE_FIRMWARE_VERSION));
         ret.add(versionAchieve);
+        Pair<String, String> calorie = new Pair<>("卡路里获取", CommandUtil.generateCommand(CommandUtil.Command.CALORIE));
+        ret.add(calorie);
         return ret;
     }
 

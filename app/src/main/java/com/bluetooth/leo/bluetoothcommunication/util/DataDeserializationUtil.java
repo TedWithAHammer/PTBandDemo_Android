@@ -58,13 +58,26 @@ public class DataDeSerializationUtil {
             case 11:
                 result = deSerializationFirmwareVersion(origin);
                 break;
+            case 12:
+                result=deserializeCalorieData(origin);
+                break;
         }
         return result;
     }
 
+    private static String deserializeCalorieData(byte[] origin) {
+        byte[] calorie=new byte[]{
+                origin[5],origin[6],
+                origin[7],origin[8]
+        };
+        String hex=TransferUtil.byte2HexStr(origin);
+        int calorieNum=Integer.valueOf(hex,16);
+        return "calorie "+calorieNum;
+    }
+
     private static String deSerializationFirmwareVersion(byte[] origin) {
         int version = origin[11] & 0xff;
-        return null;
+        return "version :"+version;
     }
 
     private static String deSerializeVoltageData(byte[] origin) {
