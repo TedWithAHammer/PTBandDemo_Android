@@ -71,7 +71,8 @@ public class CommandDetailActivity extends BaseActivity {
         List<Pair<String, String>> ret = new ArrayList<>();
         Pair<String, String> syncTime = new Pair<>("同步时间", CommandUtil.generateCommand(CommandUtil.Command.TIME_SYNC, new Date()));
         ret.add(syncTime);
-//        Pair<String,String> syncParam=new Pair<>("同步参数", CommandUtil.generateCommand("0101"));
+        Pair<String, String> syncParam = new Pair<>("同步参数", CommandUtil.generateCommand(CommandUtil.Command.PARAM_SYNC, "wly", 80, 180));
+        ret.add(syncParam);
         Pair<String, String> moveData = new Pair<>("运动数据", CommandUtil.generateCommand(CommandUtil.Command.MOTION_DATA));
         ret.add(moveData);
 //        Pair<String,String> sleepData=new Pair<>("睡眠数据", CommandUtil.generateCommand("0301"));
@@ -94,10 +95,8 @@ public class CommandDetailActivity extends BaseActivity {
         ret.add(addSpecificTimeHeart);
         Pair<String, String> deleteAllSpecificTimeHeart = new Pair<>("删除所有时间定时心率", CommandUtil.generateCommand(CommandUtil.Command.DELETE_ALL_SPECIFIC_TIME_HEART_RATE, new Date()));
         ret.add(deleteAllSpecificTimeHeart);
-//        Pair<String, String> motionWithoutHeart = new Pair<>("运动时不测心率", CommandUtil.generateCommand(CommandUtil.Command.SETTING_MOTION_WITHOUT_HEART_INTERVAL, 1));
-//        ret.add(motionWithoutHeart);
-//        Pair<String, String> motionWithHeart = new Pair<>("运动时测心率", CommandUtil.generateCommand(CommandUtil.Command.SETTING_MOTION_WITH_HEART_INTERVAL, 1));
-//        ret.add(motionWithHeart);
+        Pair<String, String> makeFriends = new Pair<>("获取交友数据", CommandUtil.generateCommand(CommandUtil.Command.MAKE_FRIENDS));
+        ret.add(makeFriends);
 
         Pair<String, String> alarm = new Pair<>("起床闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
                 CommandUtil.AlarmOperationType.ADD,

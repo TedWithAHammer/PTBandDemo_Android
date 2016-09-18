@@ -14,7 +14,6 @@ public class CommandUtil {
     //command frame fix_start_tag+len(count from app to lrc)+app(fix "b1")+etf(fix "00")+data(type+content)+etx(fix "03")+lrc(varify the data correctness)
 
     public class Command {
-        public static final String PARAM_SYNC = "01";
         public static final String MOTION_DATA = "0201";//get motion data
         public static final String SLEEP_DATA = "0301";
         public static final String HEART_DATA_GET = "0401";//get heart data(1.motion heart date 2.specific time heart data)
@@ -25,18 +24,19 @@ public class CommandUtil {
         public static final String DEVICE_VOLTAGE = "0A01";
         public static final String DEVICE_FIRMWARE_VERSION = "0B01";
         public static final String CALORIE = "0C01";
+        public static final String MAKE_FRIENDS = "0701";
 
         //UTC OR WITH TIME COMMAND
         public static final String TIME_SYNC = "00";//sync time
+        public static final String PARAM_SYNC = "01";
         public static final String DELETE_SPECIFIC_TIME_HEART_RATE = "F600";//specific heart data(data part1:(operation type1."00" delete specific time 2."01" add specific time 3."02" delete all time part)data part2.utc timemills)
         public static final String ADD_SPECIFIC_TIME_HEART_RATE = "F601";
         public static final String DELETE_ALL_SPECIFIC_TIME_HEART_RATE = "F602";
         public static final String SETTING_MOTION_WITHOUT_HEART_INTERVAL = "F700";//data part1. (1."00" motion without heart data 2."01" motion with heart data) part 2.interval unites minute
         public static final String SETTING_MOTION_WITH_HEART_INTERVAL = "F701";
         public static final String ALARM_DATA = "06";//alarm setting data part1(1."00" 2."01" 3."02") part2(1."" 2."" 3."" 4."" 5."") part3.(alarm repeat type)
-        public static final String MAKE_FRIENDS = "07";
-        public static final String TRANSPARENT_TRANSMISSION = "08";
-        public static final String GAME_HONOR_TAG = "09";
+//        public static final String TRANSPARENT_TRANSMISSION = "08";
+//        public static final String GAME_HONOR_TAG = "09";
     }
 
     public class AlarmOperationType {
@@ -106,7 +106,29 @@ public class CommandUtil {
                 utc = Long.toHexString(generateGMTTimeStamp(((Date) param[0]).getTime() / 1000));
                 result.append(reverseHex(utc));
                 break;
-
+            case Command.PARAM_SYNC:
+                if (param.length > 0) {
+                    CharSequence name = (CharSequence) param[0];
+                    String hexName = "";
+                    for (int i = 0; i < name.length(); i++) {
+                        hexName += Integer.toHexString(name.charAt(i));
+                    }
+                    if (hexName.length() < 8) {
+                        int length = hexName.length();
+                        for (int j = 0; j < 8 - length; j++) {
+                            hexName = "0" + hexName;
+                        }
+                    }
+                    result.append(hexName);
+                    String weight = Integer.toHexString((int) param[1]);
+                    String height = Integer.toHexString((int) param[2]);
+                    result.append(weight);
+                    result.append(height);
+                    result.append("0000");
+                } else {
+                    return null;
+                }
+                break;
             case Command.DELETE_ALL_SPECIFIC_TIME_HEART_RATE:
             case Command.ADD_SPECIFIC_TIME_HEART_RATE:
             case Command.DELETE_SPECIFIC_TIME_HEART_RATE:
@@ -143,15 +165,12 @@ public class CommandUtil {
                     result.append(param[1]);
                     result.append(param[2]);
                     if (param[3] instanceof Date) {
-                        utc = Long.toHexString(generateGMTTimeStamp(((Date) param[3]).getTime() / 1000+60));
+                        utc = Long.toHexString(generateGMTTimeStamp(((Date) param[3]).getTime() / 1000 + 60));
                         result.append(reverseHex(utc));
                     }
                 } else {
                     return null;
                 }
-            case Command.PARAM_SYNC:
-                break;
-
         }
         result.append(FIX_END_TAG);
         byte[] temp = new byte[1];

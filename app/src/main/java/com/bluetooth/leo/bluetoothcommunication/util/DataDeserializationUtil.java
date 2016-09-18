@@ -32,6 +32,9 @@ public class DataDeSerializationUtil {
             case 0:
                 result = deserializeTimeSyncData(origin);
                 break;
+            case 1:
+                result = deserializeParamSyncData(origin);
+                break;
             case 2:
                 result = deSerializationMotionData(origin);
                 break;
@@ -59,34 +62,48 @@ public class DataDeSerializationUtil {
                 result = deSerializationFirmwareVersion(origin);
                 break;
             case 12:
-                result=deserializeCalorieData(origin);
+                result = deserializeCalorieData(origin);
                 break;
         }
         return result;
     }
 
+    /**
+     * param sync result
+     *
+     * @param origin
+     * @return
+     */
+    private static String deserializeParamSyncData(byte[] origin) {
+        if (origin[5] == 1)
+            return "success";
+        else
+            return "failed";
+    }
+
     private static String deserializeCalorieData(byte[] origin) {
-        byte[] calorie=new byte[]{
-                origin[5],origin[6],
-                origin[7],origin[8]
+        byte[] calorie = new byte[]{
+                origin[5], origin[6],
+                origin[7], origin[8]
         };
-        String hex=TransferUtil.byte2HexStr(origin);
-        int calorieNum=Integer.valueOf(hex,16);
-        return "calorie "+calorieNum;
+        String hex = TransferUtil.byte2HexStr(origin);
+        int calorieNum = Integer.valueOf(hex, 16);
+        return "calorie " + calorieNum;
     }
 
     private static String deSerializationFirmwareVersion(byte[] origin) {
         int version = origin[11] & 0xff;
-        return "version :"+version;
+        return "version :" + version;
     }
 
     private static String deSerializeVoltageData(byte[] origin) {
         byte[] voltageByte = new byte[]{
                 origin[5], origin[6]
         };
+        String originHex=TransferUtil.byte2HexStr(origin);
         String hexStr = TransferUtil.byte2HexStr(voltageByte);
-        int voltage = Integer.valueOf(hexStr, 16);
-        return analyseVoltagePecentage(voltage);
+        int voltage = Integer.valueOf(hexStr, 16)/1000;
+        return "VOLTAGE "+voltage+"V";
     }
 
     private static String analyseVoltagePecentage(int voltage) {
