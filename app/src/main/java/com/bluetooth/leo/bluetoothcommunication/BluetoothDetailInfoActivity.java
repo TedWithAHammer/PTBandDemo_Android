@@ -70,7 +70,8 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
     TextView tvPercentage;
     @PotatoInjection(id = R.id.layoutOtaTip)
     RelativeLayout layoutOtaTip;
-
+    @PotatoInjection(id = R.id.tvClearData, click = "clearData")
+    TextView tvClearData;
 
 
     private BluetoothDevice device;
@@ -109,13 +110,13 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
     }
 
     void showCommandTip(View v) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle(getString(R.string.command_instruction));
-//        builder.setMessage(R.string.command_detail);
-//        builder.show();
         startActivity(CommandDetailActivity.class, COMMAND_REQUEST_CODE);
     }
 
+    void clearData(View v) {
+        pairList.clear();
+        adapter.notifyDataSetChanged();
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -391,8 +392,6 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (pairList.size() == 50)
-                        pairList.clear();
                     byte[] data = characteristic.getValue();
                     String hexString = TransferUtil.byte2SpecificFormatHexStr(data);
                     String des = DataDeSerializationUtil.deSerializeData(data);

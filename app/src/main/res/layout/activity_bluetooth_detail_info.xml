@@ -43,9 +43,17 @@
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
-            android:background="#40E0D0"
             android:gravity="center"
             android:text="@string/command_instruction" />
+
+        <TextView
+            android:id="@+id/tvClearData"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/tvCommandInstruction"
+            android:gravity="center"
+            android:text="@string/clear_data" />
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView

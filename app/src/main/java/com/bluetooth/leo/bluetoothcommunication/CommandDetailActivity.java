@@ -89,11 +89,11 @@ public class CommandDetailActivity extends BaseActivity {
         Pair<String, String> continueCurrentHeart = new Pair<>("继续实时心率", CommandUtil.generateCommand(CommandUtil.Command.CONTINUE_CURRENT_TIME_HEART_RATE));
         ret.add(continueCurrentHeart);
 
-        Pair<String, String> deleteSpecificTimeHeart = new Pair<>("删除此时间定时心率", CommandUtil.generateCommand(CommandUtil.Command.DELETE_SPECIFIC_TIME_HEART_RATE, new Date()));
+        Pair<String, String> deleteSpecificTimeHeart = new Pair<>("删除定时心率", CommandUtil.generateCommand(CommandUtil.Command.DELETE_SPECIFIC_TIME_HEART_RATE, new Date()));
         ret.add(deleteSpecificTimeHeart);
-        Pair<String, String> addSpecificTimeHeart = new Pair<>("添加此时间定时心率", CommandUtil.generateCommand(CommandUtil.Command.ADD_SPECIFIC_TIME_HEART_RATE, new Date()));
+        Pair<String, String> addSpecificTimeHeart = new Pair<>("添加定时心率", CommandUtil.generateCommand(CommandUtil.Command.ADD_SPECIFIC_TIME_HEART_RATE, new Date()));
         ret.add(addSpecificTimeHeart);
-        Pair<String, String> deleteAllSpecificTimeHeart = new Pair<>("删除所有时间定时心率", CommandUtil.generateCommand(CommandUtil.Command.DELETE_ALL_SPECIFIC_TIME_HEART_RATE, new Date()));
+        Pair<String, String> deleteAllSpecificTimeHeart = new Pair<>("删除所有定时心率", CommandUtil.generateCommand(CommandUtil.Command.DELETE_ALL_SPECIFIC_TIME_HEART_RATE));
         ret.add(deleteAllSpecificTimeHeart);
         Pair<String, String> makeFriends = new Pair<>("获取交友数据", CommandUtil.generateCommand(CommandUtil.Command.MAKE_FRIENDS));
         ret.add(makeFriends);
@@ -101,32 +101,32 @@ public class CommandDetailActivity extends BaseActivity {
         Pair<String, String> alarm = new Pair<>("起床闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
                 CommandUtil.AlarmOperationType.ADD,
                 CommandUtil.AlarmType.GETING_UP,
-                CommandUtil.AlarmRepeatType.WEEKDAY,
+                CommandUtil.AlarmRepeatType.WORKDAY,
                 new Date()));
         ret.add(alarm);
         Pair<String, String> alarmLearning = new Pair<>("学习闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
                 CommandUtil.AlarmOperationType.ADD,
                 CommandUtil.AlarmType.LEARNING,
-                CommandUtil.AlarmRepeatType.WEEKDAY,
+                CommandUtil.AlarmRepeatType.WORKDAY,
                 new Date()));
         ret.add(alarmLearning);
         Pair<String, String> alarmMotion = new Pair<>("运动闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
                 CommandUtil.AlarmOperationType.ADD,
                 CommandUtil.AlarmType.MOTION,
-                CommandUtil.AlarmRepeatType.WEEKDAY,
+                CommandUtil.AlarmRepeatType.WORKDAY,
                 new Date()));
         ret.add(alarmMotion);
         Pair<String, String> alarmSleeping = new Pair<>("睡觉闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
                 CommandUtil.AlarmOperationType.ADD,
                 CommandUtil.AlarmType.SLEEPING,
-                CommandUtil.AlarmRepeatType.WEEKDAY,
+                CommandUtil.AlarmRepeatType.WORKDAY,
                 new Date()));
         ret.add(alarmSleeping);
 
-        Pair<String, String> alarmDelete = new Pair<>("刪除所有闹钟闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
+        Pair<String, String> alarmDelete = new Pair<>("刪除所有闹钟", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
                 CommandUtil.AlarmOperationType.DELETE_ALL,
                 CommandUtil.AlarmType.SLEEPING,
-                CommandUtil.AlarmRepeatType.WEEKDAY,
+                CommandUtil.AlarmRepeatType.WORKDAY,
                 new Date()));
         ret.add(alarmDelete);
         Pair<String, String> uploadOTC = new Pair<>("固件更新", UPLOAD_OTC);
@@ -135,8 +135,8 @@ public class CommandDetailActivity extends BaseActivity {
         ret.add(voltageAchieve);
         Pair<String, String> versionAchieve = new Pair<>("版本获取", CommandUtil.generateCommand(CommandUtil.Command.DEVICE_FIRMWARE_VERSION));
         ret.add(versionAchieve);
-        Pair<String, String> calorie = new Pair<>("卡路里获取", CommandUtil.generateCommand(CommandUtil.Command.CALORIE));
-        ret.add(calorie);
+        Pair<String, String> deleteCache = new Pair<>("删除缓存", CommandUtil.generateCommand(CommandUtil.Command.DELETE_CACHE_DATA));
+        ret.add(deleteCache);
         return ret;
     }
 
