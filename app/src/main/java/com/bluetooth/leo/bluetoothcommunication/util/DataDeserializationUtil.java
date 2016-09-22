@@ -36,9 +36,10 @@ public class DataDeSerializationUtil {
                 result = deserializeParamSyncData(origin);
                 break;
             case 2:
-                result = deSerializationMotionData(origin);
+                result = deSerializeMotionData(origin);
                 break;
             case 3:
+                result = deSerializeSleepData(origin);
                 break;
             case 4:
                 result = deSerializeMoveHeartData(origin);
@@ -55,6 +56,9 @@ public class DataDeSerializationUtil {
             case 6:
                 result = deSerializeAlarmData(origin);
                 break;
+            case 7:
+                result = deSerializeFriendData(origin);
+                break;
             case 10:
                 result = deSerializeVoltageData(origin);
                 break;
@@ -68,6 +72,46 @@ public class DataDeSerializationUtil {
         return result;
     }
 
+    private static String deSerializeSleepData(byte[] origin) {
+        if (origin.length < 12)
+            return null;
+        byte[] utcArray = new byte[]{
+                origin[5], origin[6],
+                origin[7], origin[8]
+        };
+        String utcStr = reverseByteArray2String(utcArray);
+        String time = formatTimeMills(utcStr);
+
+        return "时间:" + time + " 状态:" + (origin[9] & 0xff);
+    }
+
+    private static String deSerializeFriendData(byte[] origin) {
+        if (origin.length < 20)
+            return null;
+        StringBuilder sb = new StringBuilder();
+        byte[] macByteArray = new byte[]{
+                origin[5], origin[6],
+                origin[7], origin[8],
+                origin[9], origin[10]
+        };
+        String macHex = reverseByteArray2String(macByteArray);
+        sb.append("mac:" + macHex);
+        String day = (origin[11] & 0xff) + "";
+        sb.append("DAYS:" + day);
+        byte[] utcByteArray = new byte[]{
+                origin[12], origin[13],
+                origin[14], origin[15]
+        };
+        String utcHex = formatTimeMills(reverseByteArray2String(utcByteArray));
+        sb.append("UTC:" + utcHex);
+        byte[] timesByteArray = new byte[]{
+                origin[16], origin[17]
+        };
+        String times = reverseByteArray2String(timesByteArray);
+        sb.append("Times:" + times);
+        return sb.toString();
+    }
+
     /**
      * param sync result
      *
@@ -75,6 +119,8 @@ public class DataDeSerializationUtil {
      * @return
      */
     private static String deserializeParamSyncData(byte[] origin) {
+        if (origin.length < 8)
+            return null;
         if (origin[5] == 1)
             return "success";
         else
@@ -92,18 +138,23 @@ public class DataDeSerializationUtil {
     }
 
     private static String deSerializationFirmwareVersion(byte[] origin) {
+        if (origin.length < 14)
+            return null;
         int version = origin[11] & 0xff;
         return "version :" + version;
     }
 
     private static String deSerializeVoltageData(byte[] origin) {
+        if (origin.length < 9)
+            return null;
         byte[] voltageByte = new byte[]{
                 origin[5], origin[6]
         };
-        String originHex=TransferUtil.byte2HexStr(origin);
-        String hexStr = TransferUtil.byte2HexStr(voltageByte);
-        int voltage = Integer.valueOf(hexStr, 16)/1000;
-        return "VOLTAGE "+voltage+"V";
+        String originHex = TransferUtil.byte2HexStr(origin);
+        String hexStr = reverseByteArray2String(voltageByte);
+        int voltage = Integer.valueOf(hexStr, 16) / 10;
+        float percise = (float) voltage / 1000;
+        return "voltage:" + percise + " percentage:" + analyseVoltagePecentage(voltage);
     }
 
     private static String analyseVoltagePecentage(int voltage) {
@@ -112,10 +163,13 @@ public class DataDeSerializationUtil {
                 return "voltage:" + (100 - i) + "%";
             }
         }
-        return "voltage:0%";
+        return "0%";
     }
 
+
     private static String deSerializeAlarmData(byte[] origin) {
+        if (origin.length < 8)
+            return null;
         if (origin[5] == 1) {
             return "收到，正常开始设置闹钟流程";
         } else {
@@ -124,6 +178,8 @@ public class DataDeSerializationUtil {
     }
 
     private static String deSerializeSpecificHeartData(byte[] origin) {
+        if (origin.length < 8)
+            return null;
         if (origin[6] == 1) {
             return "收到，正常开始设置定时测心率流程";
         } else {
@@ -151,7 +207,7 @@ public class DataDeSerializationUtil {
         };
         String utcTime = formatTimeMills(reverseByteArray2String(utcByte));
         sb.append("Time:" + utcTime);
-        switch (origin[9]) {
+        switch (origin[9] & 0xff) {
             case 0:
                 sb.append(" status:熟睡");
                 break;
@@ -171,7 +227,7 @@ public class DataDeSerializationUtil {
      * @param origin
      * @return
      */
-    public static String deSerializationMotionData(byte[] origin) {
+    public static String deSerializeMotionData(byte[] origin) {
         StringBuilder sb = new StringBuilder();
         if (origin.length < 16)
             return null;
@@ -195,6 +251,8 @@ public class DataDeSerializationUtil {
     }
 
     public static String deSerializeMoveHeartData(byte[] origin) {
+        if (origin.length < 13)
+            return null;
         StringBuilder sb = new StringBuilder();
         byte[] utcByte = new byte[]{
                 origin[5], origin[6],
@@ -203,15 +261,19 @@ public class DataDeSerializationUtil {
         String utcTime = formatTimeMills(reverseByteArray2String(utcByte));
         sb.append("Time:" + utcTime);
         sb.append("Heart rate:" + (origin[9] & 0xff));
-        sb.append("status:" + (origin[10] == 1 ? "走" : "跑"));
+        sb.append("status:" + (origin[10] & 0xff));
         return sb.toString();
     }
 
     public static String deSerializeSingleHeartData(byte[] origin) {
+        if (origin.length < 8)
+            return null;
         return "Single Heart Rate:" + (origin[5] & 0xff);
     }
 
     public static String deSerializeCurrentHeartData(byte[] origin) {
+        if (origin.length < 8)
+            return null;
         return "Current Heart Rate:" + (origin[5] & 0xff);
     }
 
