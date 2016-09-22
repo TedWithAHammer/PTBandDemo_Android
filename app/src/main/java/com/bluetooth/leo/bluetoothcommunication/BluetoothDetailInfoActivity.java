@@ -159,6 +159,7 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
         @Override
         public void onDfuProcessStarting(final String deviceAddress) {
             Log.i(Tag, "onDfuProcessStarting" + " info:" + deviceAddress);
+            layoutOtaTip.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -179,10 +180,11 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
         @Override
         public void onDfuCompleted(final String deviceAddress) {
             Log.i(Tag, "onDfuCompleted" + " info:" + deviceAddress);
+            layoutOtaTip.setVisibility(View.GONE);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(BluetoothDetailInfoActivity.this, "dfu finish", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BluetoothDetailInfoActivity.this, "DFU FINISH", Toast.LENGTH_SHORT).show();
                 }
             });
         }
