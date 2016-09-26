@@ -75,11 +75,13 @@ public class CommandDetailActivity extends BaseActivity {
         ret.add(syncParam);
         Pair<String, String> moveData = new Pair<>("运动数据", CommandUtil.generateCommand(CommandUtil.Command.MOTION_DATA));
         ret.add(moveData);
-//        Pair<String,String> sleepData=new Pair<>("睡眠数据", CommandUtil.generateCommand("0301"));
-//        ret.add(sleepData);
+        Pair<String, String> sleepData = new Pair<>("睡眠数据", CommandUtil.generateCommand(CommandUtil.Command.SLEEP_DATA));
+        ret.add(sleepData);
+        Pair<String, String> sleepTimeSetting = new Pair<>("睡眠检测时间设定", CommandUtil.generateCommand(CommandUtil.Command.SLEEP_TRACE_TIME_SETTING, CommandUtil.SleepOperationType.ADD, new Date(), new Date()));
+        ret.add(sleepTimeSetting);
         Pair<String, String> moveHeart = new Pair<>("获取心率数据", CommandUtil.generateCommand(CommandUtil.Command.HEART_DATA_GET));
         ret.add(moveHeart);
-        Pair<String, String> startSingleHeart = new Pair<>("单次测心率", CommandUtil.generateCommand(CommandUtil.Command.SINGALE_HEART_RATE));
+        Pair<String, String> startSingleHeart = new Pair<>("单次测心率", CommandUtil.generateCommand(CommandUtil.Command.SINGLE_HEART_RATE));
         ret.add(startSingleHeart);
 
         Pair<String, String> stopCurrentHeart = new Pair<>("关闭实时心率", CommandUtil.generateCommand(CommandUtil.Command.STOP_CURRENT_TIME_HEART_RATE));
@@ -100,7 +102,7 @@ public class CommandDetailActivity extends BaseActivity {
 
         Pair<String, String> alarm = new Pair<>("起床闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
                 CommandUtil.AlarmOperationType.ADD,
-                CommandUtil.AlarmType.GETING_UP,
+                CommandUtil.AlarmType.GETTING_UP,
                 CommandUtil.AlarmRepeatType.WORKDAY,
                 new Date()));
         ret.add(alarm);

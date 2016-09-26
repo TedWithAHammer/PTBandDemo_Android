@@ -1,8 +1,6 @@
 package com.bluetooth.leo.bluetoothcommunication.util;
 
 
-import com.bluetooth.leo.bluetoothcommunication.util.TransferUtil;
-
 import java.util.Date;
 
 /**
@@ -17,7 +15,7 @@ public class CommandUtil {
         public static final String MOTION_DATA = "0201";//get motion data
         public static final String SLEEP_DATA = "0301";
         public static final String HEART_DATA_GET = "0401";//get heart data(1.motion heart date 2.specific time heart data)
-        public static final String SINGALE_HEART_RATE = "0501";// get single heart data
+        public static final String SINGLE_HEART_RATE = "0501";// get single heart data
         public static final String STOP_CURRENT_TIME_HEART_RATE = "F500";//current heart data(data part 1."00" stop 2."01" start 3."02" continue)
         public static final String START_CURRENT_TIME_HEART_RATE = "F501";
         public static final String CONTINUE_CURRENT_TIME_HEART_RATE = "F502";
@@ -36,6 +34,7 @@ public class CommandUtil {
         public static final String SETTING_MOTION_WITHOUT_HEART_INTERVAL = "F700";//data part1. (1."00" motion without heart data 2."01" motion with heart data) part 2.interval unites minute
         public static final String SETTING_MOTION_WITH_HEART_INTERVAL = "F701";
         public static final String ALARM_DATA = "06";//alarm setting data part1(1."00" 2."01" 3."02") part2(1."" 2."" 3."" 4."" 5."") part3.(alarm repeat type)
+        public static final String SLEEP_TRACE_TIME_SETTING = "F8";
 //        public static final String TRANSPARENT_TRANSMISSION = "08";
 //        public static final String GAME_HONOR_TAG = "09";
     }
@@ -45,9 +44,14 @@ public class CommandUtil {
         public static final String DELETE = "01";
         public static final String DELETE_ALL = "02";
     }
+    public class SleepOperationType {
+        public static final String ADD = "01";
+        public static final String DELETE = "00";
+        public static final String DELETE_ALL = "02";
+    }
 
     public class AlarmType {
-        public static final String GETING_UP = "00";
+        public static final String GETTING_UP = "00";
         public static final String LEARNING = "01";
         public static final String MOTION = "02";
         public static final String SLEEPING = "03";
@@ -175,9 +179,20 @@ public class CommandUtil {
                     return null;
                 }
                 break;
+            case Command.SLEEP_TRACE_TIME_SETTING:
+                if (param.length > 0) {
+                    result.append(param[0]);
+                    Date date = (Date) param[1];
+                    String hexStartUTC = Integer.toHexString((int) generateGMTTimeStamp(date.getTime() / 1000));
+                    String hexEndUTC = Integer.toHexString((int) generateGMTTimeStamp(date.getTime() / 1000 + 360));
+                    result.append(reverseHex(hexStartUTC));
+                    result.append(reverseHex(hexEndUTC));
+                } else {
+                    return null;
+                }
+                break;
         }
         result.append(FIX_END_TAG);
-        byte[] temp = new byte[1];
         String lrc = generateVerifyByte(TransferUtil.hex2Bytes1(result.toString()));
         result.append(lrc);
         String len = Integer.toHexString(result.length() / 2);

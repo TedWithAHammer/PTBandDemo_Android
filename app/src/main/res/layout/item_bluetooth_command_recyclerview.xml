@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:paddingLeft="5dp"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="5dp">
+
     <TextView
         android:id="@+id/tvCommandDes"
         android:layout_width="match_parent"
         android:layout_height="36dp"
-        android:textStyle="bold"
-        android:textSize="18sp"
         android:gravity="center_vertical"
-        android:text="命令描述"/>
+        android:text="命令描述"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
     <TextView
         android:id="@+id/tvCommandDetail"
         android:layout_width="match_parent"
-        android:layout_height="28dp"
-        android:gravity="center_vertical"/>
+        android:layout_height="38dp"
+        android:gravity="center_vertical" />
 
 </LinearLayout>
