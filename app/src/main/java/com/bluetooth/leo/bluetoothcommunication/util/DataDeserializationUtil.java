@@ -75,14 +75,26 @@ public class DataDeSerializationUtil {
     private static String deSerializeSleepData(byte[] origin) {
         if (origin.length < 12)
             return null;
-        byte[] utcArray = new byte[]{
-                origin[5], origin[6],
-                origin[7], origin[8]
+        String status = "status:" + (origin[5] & 0xff);
+        byte[] startUTCArray = new byte[]{
+                origin[6], origin[7],
+                origin[8], origin[9]
         };
-        String utcStr = reverseByteArray2String(utcArray);
-        String time = formatTimeMills(utcStr);
-
-        return "时间:" + time + " 状态:" + (origin[9] & 0xff);
+        byte[] endUTCArray = new byte[]{
+                origin[10], origin[11],
+                origin[12], origin[13]
+        };
+        String startUTC = "start time:" + reverseByteArray2String(startUTCArray);
+        String endUTC = "end time:" + reverseByteArray2String(endUTCArray);
+        byte[] deepSleepTime = new byte[]{
+                origin[14], origin[15]
+        };
+        String deepTime = "deep sleep time(hour):" + reverseByteArray2String(deepSleepTime);
+        byte[] lightSleepTime = new byte[]{
+                origin[16], origin[17]
+        };
+        String lightTime = "deep sleep time(hour):" + reverseByteArray2String(lightSleepTime);
+        return status + startUTC + endUTC + deepTime + lightTime;
     }
 
     private static String deSerializeFriendData(byte[] origin) {
@@ -95,20 +107,16 @@ public class DataDeSerializationUtil {
                 origin[9], origin[10]
         };
         String macHex = reverseByteArray2String(macByteArray);
-        sb.append("mac:" + macHex);
+        sb.append("MAC:" + macHex);
         String day = (origin[11] & 0xff) + "";
         sb.append("DAYS:" + day);
+        sb.append("TIMES:" + (origin[12] & 0xff));
         byte[] utcByteArray = new byte[]{
-                origin[12], origin[13],
-                origin[14], origin[15]
+                origin[13], origin[14],
+                origin[15], origin[16]
         };
         String utcHex = formatTimeMills(reverseByteArray2String(utcByteArray));
         sb.append("UTC:" + utcHex);
-        byte[] timesByteArray = new byte[]{
-                origin[16], origin[17]
-        };
-        String times = reverseByteArray2String(timesByteArray);
-        sb.append("Times:" + times);
         return sb.toString();
     }
 
@@ -268,6 +276,8 @@ public class DataDeSerializationUtil {
     public static String deSerializeSingleHeartData(byte[] origin) {
         if (origin.length < 8)
             return null;
+        if ((origin[5] & 0xff) == 255)
+            return "Single heart measure start";
         return "Single Heart Rate:" + (origin[5] & 0xff);
     }
 

@@ -27,5 +27,5 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.0.0'
     compile 'com.leo.wang:potato:1.0.1'
     compile 'com.leo.wang:baseadapter:1.0.0'
-    compile 'no.nordicsemi.android:dfu:1.0.0'
+    compile 'no.nordicsemi.android:dfu:1.0.4'
 }
