@@ -77,7 +77,7 @@ public class CommandDetailActivity extends BaseActivity {
         ret.add(moveData);
         Pair<String, String> sleepData = new Pair<>("睡眠数据", CommandUtil.generateCommand(CommandUtil.Command.SLEEP_DATA));
         ret.add(sleepData);
-        Pair<String, String> sleepTimeSetting = new Pair<>("睡眠检测时间设定", CommandUtil.generateCommand(CommandUtil.Command.SLEEP_TRACE_TIME_SETTING, CommandUtil.SleepOperationType.ADD, new Date(), new Date()));
+        Pair<String, String> sleepTimeSetting = new Pair<>("睡眠检测时间设定(00:00-24:00)", CommandUtil.generateCommand(CommandUtil.Command.SLEEP_TRACE_TIME_SETTING, CommandUtil.SleepOperationType.ADD, new Date(), new Date()));
         ret.add(sleepTimeSetting);
         Pair<String, String> moveHeart = new Pair<>("获取心率数据", CommandUtil.generateCommand(CommandUtil.Command.HEART_DATA_GET));
         ret.add(moveHeart);

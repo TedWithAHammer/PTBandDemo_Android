@@ -44,6 +44,7 @@ public class CommandUtil {
         public static final String DELETE = "01";
         public static final String DELETE_ALL = "02";
     }
+
     public class SleepOperationType {
         public static final String ADD = "01";
         public static final String DELETE = "00";
@@ -183,8 +184,14 @@ public class CommandUtil {
                 if (param.length > 0) {
                     result.append(param[0]);
                     Date date = (Date) param[1];
+                    date.setHours(0);
+                    date.setMinutes(0);
+                    date.setSeconds(0);
                     String hexStartUTC = Integer.toHexString((int) generateGMTTimeStamp(date.getTime() / 1000));
-                    String hexEndUTC = Integer.toHexString((int) generateGMTTimeStamp(date.getTime() / 1000 + 360));
+                    date.setHours(24);
+                    date.setMinutes(0);
+                    date.setSeconds(0);
+                    String hexEndUTC = Integer.toHexString((int) generateGMTTimeStamp(date.getTime() / 1000));
                     result.append(reverseHex(hexStartUTC));
                     result.append(reverseHex(hexEndUTC));
                 } else {
