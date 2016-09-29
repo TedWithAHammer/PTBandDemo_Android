@@ -75,26 +75,13 @@ public class DataDeSerializationUtil {
     private static String deSerializeSleepData(byte[] origin) {
         if (origin.length < 12)
             return null;
-        String status = "status:" + (origin[5] & 0xff);
         byte[] startUTCArray = new byte[]{
-                origin[6], origin[7],
-                origin[8], origin[9]
-        };
-        byte[] endUTCArray = new byte[]{
-                origin[10], origin[11],
-                origin[12], origin[13]
+                origin[5], origin[6], origin[7],
+                origin[8]
         };
         String startUTC = "start time:" + reverseByteArray2String(startUTCArray);
-        String endUTC = "end time:" + reverseByteArray2String(endUTCArray);
-        byte[] deepSleepTime = new byte[]{
-                origin[14], origin[15]
-        };
-        String deepTime = "deep sleep time(hour):" + reverseByteArray2String(deepSleepTime);
-        byte[] lightSleepTime = new byte[]{
-                origin[16], origin[17]
-        };
-        String lightTime = "deep sleep time(hour):" + reverseByteArray2String(lightSleepTime);
-        return status + startUTC + endUTC + deepTime + lightTime;
+        String status = "status: " + (origin[9] & 0xff);
+        return startUTC + status;
     }
 
     private static String deSerializeFriendData(byte[] origin) {

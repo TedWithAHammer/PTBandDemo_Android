@@ -141,7 +141,7 @@ public class CommandUtil {
                 if (param.length > 0) {
                     if (param[0] instanceof Date) {
                         //// TODO: 2016/9/11 toggle after 30 seconds
-                        utc = Long.toHexString(generateGMTTimeStamp(((Date) param[0]).getTime() / 1000) + 30);
+                        utc = Long.toHexString(generateGMTTimeStamp(((Date) param[0]).getTime() / 1000) + 60);
                         result.append(reverseHex(utc));
                     }
                 } else {
