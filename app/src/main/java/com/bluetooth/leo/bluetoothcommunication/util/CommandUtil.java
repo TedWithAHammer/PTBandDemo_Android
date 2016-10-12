@@ -25,6 +25,16 @@ public class CommandUtil {
         public static final String DELETE_CACHE_DATA = "0D01";
         public static final String MAKE_FRIENDS = "0701";
         public static final String DELETE_ALL_SPECIFIC_TIME_HEART_RATE = "F602";
+        public static final String RESET = "0D00";
+        public static final String CLEAR_MOTION_DATA = "0D01";
+        public static final String CLEAR_SLEEP_DATA = "0D02";
+        public static final String CLEAR_HEART_DATA = "0D03";
+        public static final String CLEAR_FRIEND_DATA = "0D04";
+        public static final String UNBIND_DEVICE = "0E00";
+        public static final String BIND_DEVICE = "0E01";
+        public static final String LIGHT_SCREEN = "0FF101";
+        public static final String UNLIGHT_SCREEN = "0FF100";
+        public static final String CHECK_LIGHT_SCREEN = "0FF202";
 
         //UTC OR WITH TIME COMMAND
         public static final String TIME_SYNC = "00";//sync time
@@ -122,7 +132,7 @@ public class CommandUtil {
                     if (hexName.length() < 8) {
                         int length = hexName.length();
                         for (int j = 0; j < 8 - length; j++) {
-                            hexName = "0" + hexName;
+                            hexName = hexName + "0";
                         }
                     }
                     result.append(hexName);

@@ -100,30 +100,54 @@ public class CommandDetailActivity extends BaseActivity {
         Pair<String, String> makeFriends = new Pair<>("获取交友数据", CommandUtil.generateCommand(CommandUtil.Command.MAKE_FRIENDS));
         ret.add(makeFriends);
 
-        Pair<String, String> alarm = new Pair<>("起床闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
+        Pair<String, String> alarm = new Pair<>("工作日起床闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
                 CommandUtil.AlarmOperationType.ADD,
                 CommandUtil.AlarmType.GETTING_UP,
                 CommandUtil.AlarmRepeatType.WORKDAY,
                 new Date()));
         ret.add(alarm);
-        Pair<String, String> alarmLearning = new Pair<>("学习闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
+        Pair<String, String> alarmLearning = new Pair<>("工作日学习闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
                 CommandUtil.AlarmOperationType.ADD,
                 CommandUtil.AlarmType.LEARNING,
                 CommandUtil.AlarmRepeatType.WORKDAY,
                 new Date()));
         ret.add(alarmLearning);
-        Pair<String, String> alarmMotion = new Pair<>("运动闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
+        Pair<String, String> alarmMotion = new Pair<>("工作日运动闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
                 CommandUtil.AlarmOperationType.ADD,
                 CommandUtil.AlarmType.MOTION,
                 CommandUtil.AlarmRepeatType.WORKDAY,
                 new Date()));
         ret.add(alarmMotion);
-        Pair<String, String> alarmSleeping = new Pair<>("睡觉闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
+        Pair<String, String> alarmSleeping = new Pair<>("工作日睡觉闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
                 CommandUtil.AlarmOperationType.ADD,
                 CommandUtil.AlarmType.SLEEPING,
                 CommandUtil.AlarmRepeatType.WORKDAY,
                 new Date()));
         ret.add(alarmSleeping);
+        Pair<String, String> alarm1 = new Pair<>("双休日起床闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
+                CommandUtil.AlarmOperationType.ADD,
+                CommandUtil.AlarmType.GETTING_UP,
+                CommandUtil.AlarmRepeatType.WEEKDAY,
+                new Date()));
+        ret.add(alarm1);
+        Pair<String, String> alarmLearning1 = new Pair<>("双休日学习闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
+                CommandUtil.AlarmOperationType.ADD,
+                CommandUtil.AlarmType.LEARNING,
+                CommandUtil.AlarmRepeatType.WEEKDAY,
+                new Date()));
+        ret.add(alarmLearning1);
+        Pair<String, String> alarmMotion1 = new Pair<>("双休日运动闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
+                CommandUtil.AlarmOperationType.ADD,
+                CommandUtil.AlarmType.MOTION,
+                CommandUtil.AlarmRepeatType.WEEKDAY,
+                new Date()));
+        ret.add(alarmMotion1);
+        Pair<String, String> alarmSleeping1 = new Pair<>("双休日睡觉闹钟设置", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
+                CommandUtil.AlarmOperationType.ADD,
+                CommandUtil.AlarmType.SLEEPING,
+                CommandUtil.AlarmRepeatType.WEEKDAY,
+                new Date()));
+        ret.add(alarmSleeping1);
 
         Pair<String, String> alarmDelete = new Pair<>("刪除所有闹钟", CommandUtil.generateCommand(CommandUtil.Command.ALARM_DATA,
                 CommandUtil.AlarmOperationType.DELETE_ALL,
@@ -139,6 +163,26 @@ public class CommandDetailActivity extends BaseActivity {
         ret.add(versionAchieve);
         Pair<String, String> deleteCache = new Pair<>("删除缓存", CommandUtil.generateCommand(CommandUtil.Command.DELETE_CACHE_DATA));
         ret.add(deleteCache);
+        Pair<String, String> reset = new Pair<>("回复出场设置", CommandUtil.generateCommand(CommandUtil.Command.RESET));
+        ret.add(reset);
+        Pair<String, String> deleteMotionData = new Pair<>("清除运动数据", CommandUtil.generateCommand(CommandUtil.Command.CLEAR_MOTION_DATA));
+        ret.add(deleteMotionData);
+        Pair<String, String> deleteSleepData = new Pair<>("清除睡眠数据", CommandUtil.generateCommand(CommandUtil.Command.CLEAR_SLEEP_DATA));
+        ret.add(deleteSleepData);
+        Pair<String, String> deleteHeartData = new Pair<>("清除心率数据", CommandUtil.generateCommand(CommandUtil.Command.CLEAR_HEART_DATA));
+        ret.add(deleteHeartData);
+        Pair<String, String> deleteFriendData = new Pair<>("清除交友数据", CommandUtil.generateCommand(CommandUtil.Command.CLEAR_FRIEND_DATA));
+        ret.add(deleteFriendData);
+        Pair<String, String> bindDevice = new Pair<>("绑定手环", CommandUtil.generateCommand(CommandUtil.Command.BIND_DEVICE));
+        ret.add(bindDevice);
+        Pair<String, String> unBindDevice = new Pair<>("解绑手环", CommandUtil.generateCommand(CommandUtil.Command.UNBIND_DEVICE));
+        ret.add(unBindDevice);
+        Pair<String, String> lightScreen = new Pair<>("开启抬手亮屏", CommandUtil.generateCommand(CommandUtil.Command.LIGHT_SCREEN));
+        ret.add(lightScreen);
+        Pair<String, String> unlightScreen = new Pair<>("关闭抬手亮屏", CommandUtil.generateCommand(CommandUtil.Command.UNLIGHT_SCREEN));
+        ret.add(unlightScreen);
+        Pair<String, String> checkLightScreenStatus = new Pair<>("查询抬手亮屏状态", CommandUtil.generateCommand(CommandUtil.Command.CHECK_LIGHT_SCREEN));
+        ret.add(checkLightScreenStatus);
         return ret;
     }
 

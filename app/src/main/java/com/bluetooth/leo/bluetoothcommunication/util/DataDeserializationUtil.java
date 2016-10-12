@@ -12,18 +12,18 @@ public class DataDeSerializationUtil {
 
     private static String pattern = "yyyy-MM-dd HH:mm:ss";
 
-    private static int[] voltageRangeArray = new int[]{
-            4140, 4111, 4101, 4092, 4083, 4073, 4065, 4056, 4040, 4033,
-            4026, 4019, 4012, 4004, 3996, 3987, 3979, 3970, 3954, 3946,
-            3940, 3932, 3926, 3919, 3913, 3907, 3901, 3895, 3884, 3878,
-            3873, 3867, 3862, 3856, 3851, 3846, 3841, 3835, 3825, 3820,
-            3816, 3811, 3807, 3802, 3798, 3794, 3790, 3786, 3779, 3775,
-            3772, 3768, 3765, 3762, 3759, 3756, 3753, 3751, 3746, 3743,
-            3741, 3739, 3737, 3735, 3733, 3731, 3730, 3728, 3725, 3723,
-            3722, 3720, 3719, 3717, 3715, 3714, 3712, 3710, 3705, 3703,
-            3698, 3695, 3692, 3688, 3684, 3680, 3676, 3667, 3662, 3656,
-            3650, 3644, 3638, 3631, 3625, 3619, 3612, 3596, 3585, 3570,
-            3550
+    private static double[] voltageRangeArray = new double[]{
+            4183.4, 4160.7, 4146.5, 4134.4, 4124.8, 4113.3, 4102.8, 4093.1, 4083.2, 4073.3,
+            4065.2, 4055.6, 4048.2, 4041.4, 4035.8, 4027.4, 4015.9, 4004.2, 3989.6, 3977.2,
+            3968.2, 3959.8, 3953, 3948.1, 3943.7, 3939.4, 3934.1, 3929.1, 3922.6, 3915.8,
+            3909, 3901.5, 3894.1, 3887, 3880.8, 3873.3, 3866.5, 3860.6, 3854.7, 3847.9,
+            3842.6, 3837.4, 3832.1, 3826.5, 3822.2, 3817.5, 3809.2, 3804.8, 3800.8, 3797.4,
+            3793.4, 3789.9, 3786.5, 3783.4, 3780.3, 3776.9, 3774.1, 3770.7, 3768.2, 3765.8,
+            3763, 3760.2, 3756.8, 3754.6, 3752.1, 3750, 3747.5, 3745, 3742.5, 3740,
+            3737.5, 3734.4, 3731, 3728.6, 3725.1, 3721.4, 3718.6, 3714.9, 3710.9, 3706.5,
+            3701.9, 3696.6, 3690.4, 3685.5, 3679.3, 3671.8, 3667.5, 3664.7, 3662.2, 3660,
+            3655.7, 3651.1, 3642.1, 3626.3, 3592.1, 3543.5, 3489.2, 3408.9, 3283.7, 3018.9,
+            2998.8
     };      //the range of voltage to calculate the percentage of battery
 
     public static String deSerializeData(byte[] origin) {
@@ -68,8 +68,25 @@ public class DataDeSerializationUtil {
             case 12:
                 result = deserializeCalorieData(origin);
                 break;
+            case 15:
+                result = deserializeScreenData(origin);
+                break;
         }
         return result;
+    }
+
+    private static String deserializeScreenData(byte[] origin) {
+        switch (origin[5] & 0xff) {
+            case 241:
+                return (origin[6] & 0xff) == 1 ? "success" : "fail";
+            case 242:
+                if ((origin[6] & 0xff) == 1)
+                    return "screen status:on";
+                else
+                    return "screen status:off";
+            default:
+                return null;
+        }
     }
 
     private static String deSerializeSleepData(byte[] origin) {
@@ -97,10 +114,16 @@ public class DataDeSerializationUtil {
         sb.append("MAC:" + macHex);
         String day = (origin[11] & 0xff) + "";
         sb.append("DAYS:" + day);
-        sb.append("TIMES:" + (origin[12] & 0xff));
+        byte[] timesByteArray = new byte[]{
+                origin[12], origin[13]
+        };
+        String hex = reverseByteArray2String(timesByteArray);
+        int times = Integer.valueOf(hex, 16);
+        sb.append("TIMES:" + times);
         byte[] utcByteArray = new byte[]{
-                origin[13], origin[14],
-                origin[15], origin[16]
+                origin[14],
+                origin[15], origin[16],
+                origin[17]
         };
         String utcHex = formatTimeMills(reverseByteArray2String(utcByteArray));
         sb.append("UTC:" + utcHex);
@@ -148,7 +171,7 @@ public class DataDeSerializationUtil {
         String originHex = TransferUtil.byte2HexStr(origin);
         String hexStr = reverseByteArray2String(voltageByte);
         int voltage = Integer.valueOf(hexStr, 16) / 10;
-        float percise = (float) voltage / 1000;
+        double percise = (double) voltage ;
         return "voltage:" + percise + " percentage:" + analyseVoltagePecentage(voltage);
     }
 
