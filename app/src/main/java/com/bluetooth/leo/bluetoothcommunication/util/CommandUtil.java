@@ -100,7 +100,7 @@ public class CommandUtil {
         result.append(FIX_APP_ETF_TAG);
         result.append(command);
         result.append(FIX_END_TAG);
-        String lrc = generateVerifyByte(TransferUtil.hex2Bytes1(result.toString()));
+        String lrc = generateVerifyByte(TransferUtil.hex2Bytes(result.toString()));
         result.append(lrc);
         String len = Integer.toHexString(result.length() / 2);
         if (len.length() == 1) {
@@ -210,7 +210,7 @@ public class CommandUtil {
                 break;
         }
         result.append(FIX_END_TAG);
-        String lrc = generateVerifyByte(TransferUtil.hex2Bytes1(result.toString()));
+        String lrc = generateVerifyByte(TransferUtil.hex2Bytes(result.toString()));
         result.append(lrc);
         String len = Integer.toHexString(result.length() / 2);
         if (len.length() == 1) {

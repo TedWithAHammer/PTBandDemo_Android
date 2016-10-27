@@ -55,7 +55,7 @@ public class TransferUtil {
      * @param src
      * @return
      */
-    public static byte[] hex2Bytes1(String src){
+    public static byte[] hex2Bytes(String src){
         byte[] res = new byte[src.length()/2];
         char[] chs = src.toCharArray();
         int[] b = new int[2];

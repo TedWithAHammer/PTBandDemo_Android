@@ -54,6 +54,15 @@
             android:layout_toLeftOf="@+id/tvCommandInstruction"
             android:gravity="center"
             android:text="@string/clear_data" />
+
+        <TextView
+            android:id="@+id/tvOutputFile"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/tvClearData"
+            android:gravity="center"
+            android:text="@string/output_data_file" />
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
@@ -103,4 +112,14 @@
             android:textColor="#FF4500"
             android:textSize="16sp" />
     </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/tvResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginLeft="10dp"
+        android:text="result" />
 </RelativeLayout>

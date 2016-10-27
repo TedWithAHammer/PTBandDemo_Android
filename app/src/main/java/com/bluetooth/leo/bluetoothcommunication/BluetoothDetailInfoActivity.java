@@ -1,7 +1,6 @@
 package com.bluetooth.leo.bluetoothcommunication;
 
-import android.app.Activity;
-import android.app.NotificationManager;
+import android.app.Dialog;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
@@ -36,10 +35,11 @@ import com.bluetooth.leo.bluetoothcommunication.util.DataDeSerializationUtil;
 import com.bluetooth.leo.bluetoothcommunication.util.TransferUtil;
 import com.leo.baseadapter.BaseViewHolder;
 import com.leo.baseadapter.RecyclerAdapter;
-import com.leo.potato.Potato;
 import com.leo.potato.PotatoInjection;
 
-import java.net.URI;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -72,6 +72,10 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
     RelativeLayout layoutOtaTip;
     @PotatoInjection(id = R.id.tvClearData, click = "clearData")
     TextView tvClearData;
+    @PotatoInjection(id = R.id.tvOutputFile, click = "outputFile")
+    TextView tvOutputFile;
+    @PotatoInjection(id = R.id.tvResult, click = "deserialize")
+    TextView tvResult;
 
 
     private BluetoothDevice device;
@@ -85,6 +89,8 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
     public static final int COMMAND_REQUEST_CODE = 1001;
     public static final String COMMAND_CONTENT = "command_content";
     public static final String COMMAND_NAME = "command_name";
+    public static final String DATA_FILE_NAME = "BluetoothData";
+    public static final String DATA_FILE_TYPE = ".txt";
 
 
     List<Pair<String, String>> pairList = new ArrayList<>();
@@ -104,6 +110,60 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
         initRecyclerView();
     }
 
+    void deserialize(View v) {
+        pairList.clear();
+
+        List<String> raw = new ArrayList<>();
+        raw.add("020ab10103393f0d580403e7");
+        raw.add("020ab1010392470d58010331");
+        raw.add("020ab10103d0470d58020370");
+        raw.add("020ab101037e550d580103cf");
+        raw.add("020ab10103795b0d580003c7");
+        raw.add("020ab10103bc600d58010338");
+        raw.add("020ab1010327660d580203a6");
+        raw.add("020ab101031b670d58010398");
+        raw.add("020ab10103d2670d58000350");
+        raw.add("020ab10103b9690d58010334");
+
+        raw.add("020ab10103ac6a0d58000323");
+        raw.add("020ab10103a16b0d5801032e");
+        raw.add("020ab10103366f0d580003bc");
+        raw.add("020ab1010344730d580103d3");
+        raw.add("020ab10103ed750d58050378");
+        raw.add("020ab10103d4be0d5804038b");
+        raw.add("020ab1010384d70d580103b7");
+        raw.add("020ab101033fd80d58020300");
+        raw.add("020ab10103fadd0d580103c3");
+        raw.add("020ab10103efde0d580203d6");
+
+        raw.add("020ab101038fe10d5801038a");
+        raw.add("020ab10103f4e30d580203f0");
+        raw.add("020ab101037df90d58010360");
+        raw.add("020ab10103bbf90d580203a5");
+        raw.add("020ab1010371190e5801038f");
+        raw.add("020ab10103281a0e580003d4");
+        raw.add("020ab10103a81f0e58010350");
+        raw.add("020ab1010329510e5802039c");
+        raw.add("020ab101035e580e580103e1");
+        raw.add("020ab1010318b50e5800034b");
+
+        raw.add("020ab1010349b60e58010318");
+        raw.add("020ab101033eb70e5800036f");
+        raw.add("020ab1010366b90e58010338");
+        raw.add("020ab1010311bb0e5800034c");
+        raw.add("020ab10103d9bb0e58010385");
+        raw.add("020ab1010384bd0e580003df");
+        raw.add("020ab10103f3bf0e580103ab");
+        raw.add("020ab101031ec70e5800033f");
+        raw.add("020ab1000368c70e5805034d");
+        for (String rawData : raw) {
+            byte[] bytes = TransferUtil.hex2Bytes(rawData);
+            String result = DataDeSerializationUtil.sleepTimeTest(bytes);
+            pairList.add(new Pair<String, String>(rawData, result));
+        }
+        adapter.notifyDataSetChanged();
+    }
+
     @Override
     protected int inflateRootView() {
         return R.layout.activity_bluetooth_detail_info;
@@ -116,6 +176,42 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
     void clearData(View v) {
         pairList.clear();
         adapter.notifyDataSetChanged();
+    }
+
+    void outputFile(View v) {
+        String result = new SimpleDateFormat("hh:mm:ss").format(new Date());
+        String filePath = getExternalFilesDir(null).getAbsolutePath() + "/" + DATA_FILE_NAME + result + DATA_FILE_TYPE;
+        File file = new File(filePath);
+        try {
+            FileWriter fw = new FileWriter(file);
+            BufferedWriter writer = new BufferedWriter(fw);
+            if (pairList.size() > 0) {
+                for (int i = 0; i < pairList.size(); i++) {
+                    Pair<String, String> data = pairList.get(i);
+                    writer.write(data.first);
+                    writer.newLine();
+                    writer.write(data.second);
+                    writer.newLine();
+                }
+            }
+            writer.flush();
+            fw.close();
+            writer.close();
+        } catch (Exception ex) {
+            Toast.makeText(this, "导出失败 错误消息" + ex.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        showDialog("文件导出成功", "请到" + filePath + "查看", "确认", null);
+        Toast.makeText(this, "文件导出成功请到目录" + filePath + "查看", Toast.LENGTH_SHORT).show();
+    }
+
+    private void showDialog(String title, String message, String positiveContent, Dialog.OnClickListener pClick) {
+        AlertDialog.Builder build = new AlertDialog.Builder(this);
+        build.setTitle(title);
+        build.setPositiveButton(positiveContent, pClick);
+        build.setMessage(message);
+        build.setCancelable(true);
+        build.create();
+        build.show();
     }
 
     @Override
@@ -131,7 +227,7 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
                 uploadOTC(command);
                 return;
             }
-            byte[] byteArray = TransferUtil.hex2Bytes1(command);
+            byte[] byteArray = TransferUtil.hex2Bytes(command);
             if (writeCharacteristic != null) {
                 writeCharacteristic.setValue(byteArray);
                 boolean isSucces = mGatt.writeCharacteristic(writeCharacteristic);
@@ -285,7 +381,7 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
         if (!TextUtils.isEmpty(etCommand.getText().toString())) {
 
             String hexString = CommandUtil.generateCommand(etCommand.getText().toString().replace(" ", "").toUpperCase());
-            byte[] data = TransferUtil.hex2Bytes1(hexString);
+            byte[] data = TransferUtil.hex2Bytes(hexString);
             if (writeCharacteristic != null) {
                 writeCharacteristic.setValue(data);
                 boolean isSucces = mGatt.writeCharacteristic(writeCharacteristic);
