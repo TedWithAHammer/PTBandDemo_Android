@@ -183,6 +183,12 @@ public class CommandDetailActivity extends BaseActivity {
         ret.add(unlightScreen);
         Pair<String, String> checkLightScreenStatus = new Pair<>("查询抬手亮屏状态", CommandUtil.generateCommand(CommandUtil.Command.CHECK_LIGHT_SCREEN));
         ret.add(checkLightScreenStatus);
+        Pair<String, String> existAlarmDataGet = new Pair<>("获取手环已设置闹钟数据", CommandUtil.generateCommand(CommandUtil.Command.ACHIEVE_EXIST_SETTING + CommandUtil.SettingType.ALARM));
+        ret.add(existAlarmDataGet);
+        Pair<String, String> existHeartDataGet = new Pair<>("获取手环已设置定时心率数据", CommandUtil.generateCommand(CommandUtil.Command.ACHIEVE_EXIST_SETTING + CommandUtil.SettingType.HEART));
+        ret.add(existHeartDataGet);
+        Pair<String, String> existSleepDataGet = new Pair<>("获取手环已设定的睡眠检测时间段", CommandUtil.generateCommand(CommandUtil.Command.ACHIEVE_EXIST_SETTING + CommandUtil.SettingType.SLEEP));
+        ret.add(existSleepDataGet);
         return ret;
     }
 

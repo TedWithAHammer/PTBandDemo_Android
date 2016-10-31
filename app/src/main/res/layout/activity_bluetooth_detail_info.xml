@@ -121,5 +121,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginLeft="10dp"
-        android:text="result" />
+        android:text="result"
+        android:visibility="gone"/>
+
 </RelativeLayout>

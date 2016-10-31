@@ -2,7 +2,6 @@ package com.bluetooth.leo.bluetoothcommunication.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 /**
  * Created by leo on 2016/9/4.
@@ -71,8 +70,177 @@ public class DataDeSerializationUtil {
             case 15:
                 result = deserializeScreenData(origin);
                 break;
+            case 16:
+                result = deserializeExistSettingData(origin);
+                break;
+            case 17:
+                result = deserializeUnresponseCommand(origin);
+                break;
         }
         return result;
+    }
+
+    private static String deserializeUnresponseCommand(byte[] origin) {
+        StringBuilder sb = new StringBuilder();
+        int command = origin[5] & 0xff;
+        switch (command) {
+            case 0:
+                sb.append("同步时间");
+                break;
+            case 1:
+                sb.append("同步参数");
+                break;
+            case 2:
+                sb.append("运动数据");
+                break;
+            case 3:
+                sb.append("睡眠数据");
+                break;
+            case 4:
+                sb.append("心率数据");
+                break;
+            case 5:
+                sb.append("单次心率");
+                break;
+            case 6:
+                sb.append("闹钟");
+                break;
+            case 7:
+                sb.append("NFC交友y");
+                break;
+            case 8:
+                sb.append("透传");
+                break;
+            case 9:
+                sb.append("游戏荣耀标志");
+                break;
+            case 10:
+                sb.append("电压值");
+                break;
+            case 11:
+                sb.append("固件版本号");
+                break;
+            case 12:
+                sb.append("卡路里消耗");
+                break;
+            case 13:
+                sb.append("清楚数据");
+                break;
+            case 14:
+                sb.append("绑定，解绑");
+                break;
+            case 15:
+                sb.append("亮屏");
+                break;
+            case 16:
+                sb.append("已设置数据获取");
+                break;
+            case 17:
+                sb.append("未响应指令");
+                break;
+            case 245:
+                sb.append("实时心率");
+                break;
+            case 246:
+                sb.append("定时测心率");
+                break;
+            case 247:
+                sb.append("设定运动心率间隔");
+                break;
+            case 248:
+                sb.append("设定睡眠时间间隔");
+                break;
+        }
+        int temp6 = origin[6] & 0xff;
+        sb.append(temp6 == 0 ? " 未响应" : " 响应");
+        sb.append(" 原因:");
+        int temp7 = origin[7] & 0xff;
+        switch (temp7) {
+            case 0:
+                sb.append(temp6 == 0 ? "手机处于关机提醒状态" : "关机提醒中断");
+                break;
+            case 1:
+                sb.append(temp6 == 0 ? "手环处于低电量状态" : "低电量中断");
+                break;
+            case 2:
+                sb.append(temp6 == 0 ? "手环处于充电状态" : "充电中断");
+                break;
+            case 3:
+                sb.append(temp6 == 0 ? "手环处于rawdata状态" : "rawdata中断");
+                break;
+            case 4:
+                sb.append(temp6 == 0 ? "手环处于蓝牙交友状态" : "蓝牙交友中断");
+                break;
+            case 5:
+                sb.append(temp6 == 0 ? "手环处于心率测试状态" : "心率测试中断");
+                break;
+            case 6:
+                sb.append(temp6 == 0 ? "手环处于闹钟提醒状态" : "闹钟提醒中断");
+                break;
+            case 255:
+                sb.append(temp6 == 0 ? "手环处于未知状态" : "未知中断");
+                break;
+        }
+        return sb.toString();
+    }
+
+    private static String deserializeExistSettingData(byte[] origin) {
+        StringBuilder sb = new StringBuilder();
+        if (origin.length <= 9 && (origin[6] & 0xff) == 255) {
+            if ((origin[5] & 0xff) == 0)
+                sb.append("闹钟数据为空");
+            if ((origin[5] & 0xff) == 1)
+                sb.append("定时心率设置为空");
+            if ((origin[5] & 0xff) == 2)
+                sb.append("睡眠监测时间段为空");
+        } else {
+            /*0 alrm data |1 heart data|2 sleep data */
+            if ((origin[5] & 0xff) == 0) {
+                sb.append("闹钟");
+                int temp6 = origin[6] & 0xff;
+                String repeat = Integer.toBinaryString(temp6);
+                sb.append("重复时间:" + repeat);
+                int temp7 = origin[7] & 0xff;
+                switch (temp6) {
+                    case 0:
+                        sb.append(" 起床提醒");
+                        break;
+                    case 1:
+                        sb.append(" 学习提醒");
+                        break;
+                    case 2:
+                        sb.append(" 运动提醒");
+                        break;
+                    case 3:
+                        sb.append(" 睡觉提醒");
+                        break;
+                    case 4:
+                        sb.append(" 自定义提醒");
+                        break;
+                }
+                int temp8 = origin[8] & 0xff;
+                sb.append(" 时间:" + temp8 + "时");
+                int temp9 = origin[9] & 0xff;
+                sb.append(" " + temp9 + "分");
+            } else if ((origin[5] & 0xff) == 1) {
+                sb.append("心率");
+                int temp6 = origin[6] & 0xff;
+                sb.append(" 时间:" + temp6 + "时");
+                int temp7 = origin[7] & 0xff;
+                sb.append(" " + temp7 + "分");
+            } else if ((origin[5] & 0xff) == 2) {
+                sb.append("睡眠时间检测");
+                int temp6 = origin[6] & 0xff;
+                sb.append(" 开始时间:" + temp6 + "时");
+                int temp7 = origin[7] & 0xff;
+                sb.append(" " + temp7 + "分");
+                int temp8 = origin[8] & 0xff;
+                sb.append(" 结束时间:" + temp8 + "时");
+                int temp9 = origin[9] & 0xff;
+                sb.append(" " + temp9 + "分");
+            }
+        }
+        return sb.toString();
     }
 
     private static String deserializeScreenData(byte[] origin) {
@@ -93,12 +261,24 @@ public class DataDeSerializationUtil {
         if (origin.length < 12)
             return null;
         byte[] startUTCArray = new byte[]{
-                origin[5], origin[6], origin[7],
-                origin[8]
+                origin[5], origin[6],
+                origin[7], origin[8]
         };
-        String startUTC = "start time:" + reverseByteArray2String(startUTCArray);
+        String startUTC = "start time:" + formatTimeMills(reverseByteArray2String(startUTCArray));
         String status = "status: " + (origin[9] & 0xff);
         return startUTC + status;
+    }
+
+    public static String sleepTimeTest(byte[] origin) {
+        byte[] startUTCArray = new byte[]{
+                origin[5], origin[6],
+                origin[7], origin[8]
+        };
+        String startUTC = reverseByteArray2String(startUTCArray);
+        long utcTime = Long.valueOf(startUTC, 16);
+        utcTime -= 8 * 60 * 60;
+        Date date = new Date(utcTime * 1000);
+        return date.toString();
     }
 
     private static String deSerializeFriendData(byte[] origin) {
@@ -171,7 +351,7 @@ public class DataDeSerializationUtil {
         String originHex = TransferUtil.byte2HexStr(origin);
         String hexStr = reverseByteArray2String(voltageByte);
         int voltage = Integer.valueOf(hexStr, 16) / 10;
-        double percise = (double) voltage ;
+        double percise = (double) voltage;
         return "voltage:" + percise + " percentage:" + analyseVoltagePecentage(voltage);
     }
 
@@ -299,9 +479,8 @@ public class DataDeSerializationUtil {
 
 
     public static String formatTimeMills(String mills) {
-        long timeMills = Long.valueOf(mills, 16) * 1000;
+        long timeMills = (Long.valueOf(mills, 16) - 8 * 60 * 60) * 1000;
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date date = new Date(timeMills);
         return sdf.format(date);
     }

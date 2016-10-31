@@ -35,6 +35,7 @@ public class CommandUtil {
         public static final String LIGHT_SCREEN = "0FF101";
         public static final String UNLIGHT_SCREEN = "0FF100";
         public static final String CHECK_LIGHT_SCREEN = "0FF202";
+        public static final String ACHIEVE_EXIST_SETTING = "10";
 
         //UTC OR WITH TIME COMMAND
         public static final String TIME_SYNC = "00";//sync time
@@ -72,6 +73,12 @@ public class CommandUtil {
     public class AlarmRepeatType {
         public static final String WORKDAY = "F8";
         public static final String WEEKDAY = "06";
+    }
+
+    public class SettingType {
+        public static final String ALARM = "00";
+        public static final String HEART = "01";
+        public static final String SLEEP = "02";
     }
 
     /**
