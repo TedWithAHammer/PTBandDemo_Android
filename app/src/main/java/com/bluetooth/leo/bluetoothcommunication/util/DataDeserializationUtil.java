@@ -23,7 +23,8 @@ public class DataDeSerializationUtil {
             3701.9, 3696.6, 3690.4, 3685.5, 3679.3, 3671.8, 3667.5, 3664.7, 3662.2, 3660,
             3655.7, 3651.1, 3642.1, 3626.3, 3592.1, 3543.5, 3489.2, 3408.9, 3283.7, 3018.9,
             2998.8
-    };      //the range of voltage to calculate the percentage of battery
+    };
+    /*the range of voltage to calculate the percentage of battery*/
 
     public static String deSerializeData(byte[] origin) {
         String result = "";
