@@ -109,7 +109,7 @@ public class FindDeviceActivity extends BaseActivity {
                     bluetoothAdapter.stopLeScan(deviceScanResults);
                     chessAdapter.notifyDataSetChanged();
                 }
-            }, 1000);
+            }, 10000);
         }
     }
 
@@ -124,7 +124,7 @@ public class FindDeviceActivity extends BaseActivity {
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
             if (isScan) {
                 String macAddress = device.getAddress();
-                if (!checkReplicated(macAddress)) {
+                if (!TextUtils.isEmpty(device.getName()) && !checkReplicated(macAddress)) {
                     devices.add(new DeviceWithDis(device, rssi));
                     chessAdapter.notifyDataSetChanged();
                 }

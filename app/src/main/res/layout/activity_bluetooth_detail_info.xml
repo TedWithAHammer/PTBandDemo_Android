@@ -8,40 +8,12 @@
     <RelativeLayout
         android:id="@+id/layoutControl"
         android:layout_width="match_parent"
-        android:layout_height="40dp">
-
-        <TextView
-            android:id="@+id/tvTip"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
-            android:gravity="center_vertical"
-            android:text="@string/command"
-            android:visibility="gone" />
-
-
-        <EditText
-            android:id="@+id/etCommand"
-            android:layout_width="140dp"
-            android:layout_height="match_parent"
-            android:layout_toEndOf="@+id/tvTip"
-            android:gravity="center_vertical"
-            android:hint="@string/command_tip"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/btnSendCommand"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@+id/etCommand"
-            android:text="@string/send_command"
-            android:visibility="gone" />
-
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/tvCommandInstruction"
             android:layout_width="80dp"
-            android:layout_height="match_parent"
+            android:layout_height="36dp"
             android:layout_alignParentEnd="true"
             android:gravity="center"
             android:text="@string/command_instruction" />
@@ -49,18 +21,39 @@
         <TextView
             android:id="@+id/tvClearData"
             android:layout_width="80dp"
-            android:layout_height="match_parent"
+            android:layout_height="36dp"
             android:layout_marginRight="5dp"
             android:layout_toLeftOf="@+id/tvCommandInstruction"
             android:gravity="center"
             android:text="@string/clear_data" />
 
+
+        <EditText
+            android:id="@+id/etCommand"
+            android:layout_width="280dp"
+            android:layout_height="48dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvOutputFile"
+            android:gravity="center_vertical"
+            android:hint="@string/command_tip"
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/btnSendCommand"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_below="@+id/tvClearData"
+            android:layout_toRightOf="@+id/etCommand"
+            android:text="@string/send_command"
+            android:visibility="visible" />
+
         <TextView
             android:id="@+id/tvOutputFile"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="36dp"
+            android:layout_alignParentTop="true"
             android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@+id/tvClearData"
+            android:layout_toStartOf="@+id/tvClearData"
             android:gravity="center"
             android:text="@string/output_data_file" />
     </RelativeLayout>
@@ -79,15 +72,6 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
 
-    <TextView
-        android:id="@+id/lostPackageNum"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:text="@string/lost_package_num"
-        android:textSize="18sp"
-        android:visibility="gone" />
 
     <RelativeLayout
         android:id="@+id/layoutOtaTip"
@@ -122,6 +106,6 @@
         android:layout_alignParentEnd="true"
         android:layout_marginLeft="10dp"
         android:text="result"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </RelativeLayout>

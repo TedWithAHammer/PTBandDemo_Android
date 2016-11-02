@@ -9,7 +9,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 22
         versionCode 1
-        versionName "1.4"
+        versionName "1.5"
     }
     buildTypes {
         release {
@@ -28,4 +28,5 @@ dependencies {
     compile 'com.leo.wang:potato:1.0.1'
     compile 'com.leo.wang:baseadapter:1.0.0'
     compile 'no.nordicsemi.android:dfu:1.0.4'
+    compile 'com.idescout.sql:sqlscout-server:2.0'
 }

@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.util.Pair;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -56,8 +57,6 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
     private static final String Tag = "com.leo.wang";
     @PotatoInjection(id = R.id.btnSendCommand, click = "sendCommand")
     Button btnSendCommand;
-    @PotatoInjection(id = R.id.lostPackageNum)
-    TextView lostPackageNum;
     @PotatoInjection(id = R.id.etCommand)
     EditText etCommand;
     @PotatoInjection(id = R.id.rvData)
@@ -222,7 +221,7 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
                 return;
             String command = data.getStringExtra(COMMAND_CONTENT);
             String commandName = data.getStringExtra(COMMAND_NAME);
-            Toast.makeText(this, commandName, Toast.LENGTH_SHORT).show();
+            etCommand.setText(command);
             if (command.contains("file")) {
                 uploadOTC(command);
                 return;
@@ -379,8 +378,7 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
             return;
         }
         if (!TextUtils.isEmpty(etCommand.getText().toString())) {
-
-            String hexString = CommandUtil.generateCommand(etCommand.getText().toString().replace(" ", "").toUpperCase());
+            String hexString = etCommand.getText().toString();
             byte[] data = TransferUtil.hex2Bytes(hexString);
             if (writeCharacteristic != null) {
                 writeCharacteristic.setValue(data);
@@ -486,23 +484,14 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
-//            Log.i(Tag, "onCharacteristicChanged");
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    byte[] data = characteristic.getValue();
-                    String hexString = TransferUtil.byte2SpecificFormatHexStr(data);
-                    String des = DataDeSerializationUtil.deSerializeData(data);
-                    if (!TextUtils.isEmpty(hexString)) {
-                        pairList.add(new Pair<String, String>(hexString, des));
-                    }
-                    Log.i(Tag, "onCharacteristicChanged data:" + hexString);
-                    adapter.notifyDataSetChanged();
-//                    int lastNum = data[data.length - 1];
-//                    lastNum = lastNum & 0xff;
-//                    decodeData(lastNum);
-                }
-            });
+            byte[] data = characteristic.getValue();
+            String hexString = TransferUtil.byte2SpecificFormatHexStr(data);
+            Log.i(Tag, "onCharacteristicChanged hex data:" + hexString);
+            String des = DataDeSerializationUtil.deSerializeData(data);
+            if (!TextUtils.isEmpty(hexString)) {
+                pairList.add(new Pair<String, String>(hexString, des));
+            }
+            handler.sendEmptyMessage(1);
         }
 
         @Override
@@ -536,19 +525,15 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
         }
     }
 
-    int counter = 1;
-    int preNum = 0;
-    int receiveNum = 0;
 
-    private void decodeData(int lastNum) {
-        if (lastNum < preNum) {
-            lostPackageNum.setText(counter * 256 + "个包收到" + receiveNum + "个包");
-            counter++;
+    Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            if (msg.what == 1) {
+                adapter.notifyDataSetChanged();
+            }
+            return false;
         }
-        preNum = lastNum;
-        receiveNum++;
-    }
-
-    Handler handler = new Handler();
+    });
 
 }

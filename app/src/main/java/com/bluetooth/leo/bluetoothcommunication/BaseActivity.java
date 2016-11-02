@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.idescout.sql.SqlScoutServer;
 import com.leo.potato.Potato;
 
 /**
@@ -18,6 +19,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(inflateRootView());
+        SqlScoutServer.create(this, getPackageName());
     }
 
     @Override
