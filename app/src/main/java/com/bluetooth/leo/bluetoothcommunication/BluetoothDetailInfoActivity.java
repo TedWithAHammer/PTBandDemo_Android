@@ -226,6 +226,7 @@ public class BluetoothDetailInfoActivity extends BaseActivity {
                 uploadOTC(command);
                 return;
             }
+            Log.i(Tag, "command " + command);
             byte[] byteArray = TransferUtil.hex2Bytes(command);
             if (writeCharacteristic != null) {
                 writeCharacteristic.setValue(byteArray);

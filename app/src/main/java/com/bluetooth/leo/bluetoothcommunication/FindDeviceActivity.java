@@ -31,7 +31,6 @@ public class FindDeviceActivity extends BaseActivity {
     boolean isBluetoothOpen = true;
     private BluetoothAdapter bluetoothAdapter;
     private static final int BLUETOOTH_REQUEST_CODE = 1001;
-    public static String uniqueUuid = "";
 
     ArrayList<DeviceWithDis> devices = new ArrayList<>();
     public static final String DEVICE_INFO = "device_info";

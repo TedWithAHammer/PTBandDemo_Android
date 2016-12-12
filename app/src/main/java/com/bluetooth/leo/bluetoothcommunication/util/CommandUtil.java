@@ -36,6 +36,8 @@ public class CommandUtil {
         public static final String UNLIGHT_SCREEN = "0FF100";
         public static final String CHECK_LIGHT_SCREEN = "0FF202";
         public static final String ACHIEVE_EXIST_SETTING = "10";
+        public static final String ADD_FLOWER = "1201";
+        public static final String DELETE_FLOWER = "1200";
 
         //UTC OR WITH TIME COMMAND
         public static final String TIME_SYNC = "00";//sync time
@@ -213,6 +215,14 @@ public class CommandUtil {
                     result.append(reverseHex(hexEndUTC));
                 } else {
                     return null;
+                }
+                break;
+            case Command.ADD_FLOWER:
+            case Command.DELETE_FLOWER:
+                if (param.length > 1) {
+                    if (param[0] instanceof Integer) {
+//                        String hexCurrent=
+                    }
                 }
                 break;
         }
